@@ -1,6 +1,6 @@
 <div align="center">
 
-# EcanBuy 🛒
+# EcanBuy
 
 **Marketplace** construído com Next.js (App Router) para praticar rotas dinâmicas, gerenciamento de estado e arquitetura de componentes.
 
