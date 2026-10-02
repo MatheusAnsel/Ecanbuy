@@ -1,6 +1,8 @@
 import type { Cart, CartLine, Product } from "./types";
 import { mockProducts } from "./mock-products";
 
+// Estas variáveis são lidas só no servidor (sem prefixo NEXT_PUBLIC_).
+// Use APENAS o token da Storefront API. Nunca use o token Admin (shpat_...).
 const domain = process.env.SHOPIFY_STORE_DOMAIN;
 const token = process.env.SHOPIFY_STOREFRONT_TOKEN;
 const apiVersion = process.env.SHOPIFY_API_VERSION ?? "2026-07";
@@ -192,6 +194,17 @@ interface CartNode {
   };
 }
 
+// O checkout é hospedado pela Shopify. Só aceitamos https, para o botão
+// "Finalizar compra" nunca apontar para um esquema ou destino inesperado.
+function safeCheckoutUrl(url: string): string {
+  try {
+    const u = new URL(url);
+    return u.protocol === "https:" ? u.toString() : "";
+  } catch {
+    return "";
+  }
+}
+
 function mapCart(node: CartNode): Cart {
   const lines: CartLine[] = node.lines.nodes.map((l) => ({
     id: l.id,
@@ -206,7 +219,7 @@ function mapCart(node: CartNode): Cart {
 
   return {
     id: node.id,
-    checkoutUrl: node.checkoutUrl,
+    checkoutUrl: safeCheckoutUrl(node.checkoutUrl),
     totalQuantity: node.totalQuantity,
     subtotal: parseFloat(node.cost.subtotalAmount.amount),
     total: parseFloat(node.cost.totalAmount.amount),

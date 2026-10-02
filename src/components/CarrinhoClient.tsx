@@ -196,7 +196,7 @@ export default function CarrinhoClient({ cart, configured }: CarrinhoClientProps
                     </span>
                   </div>
 
-                  <a href={cart?.checkoutUrl} className="checkout-btn"
+                  <a href={cart?.checkoutUrl || "#"} aria-disabled={!cart?.checkoutUrl} className="checkout-btn"
                     style={{ display: "block", textAlign: "center", textDecoration: "none", width: "100%", background: "#111", color: "#f5f5f3", padding: "16px", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "2px", marginBottom: "12px" }}>
                     FINALIZAR COMPRA
                   </a>
