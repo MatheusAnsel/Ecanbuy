@@ -1,38 +1,53 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import type { Product } from "@/lib/types";
+import { addToCartAction } from "@/app/actions";
+import { storeConfig } from "@/lib/store-config";
 
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  oldPrice: number | null;
-  category: string;
-  description: string;
-  sizes: string[];
-  material: string;
+interface ProductDetailProps {
+  product: Product;
+  cartSlot: React.ReactNode;
 }
 
-const allProducts: Product[] = [
-  { id: 1, name: "Tênis Urban Pro", price: 299.90, oldPrice: 399.90, category: "Calçados", description: "Design urbano com conforto extremo. Solado de borracha antiderrapante, palmilha anatômica e cabedal em couro sintético de alta durabilidade.", sizes: ["38", "39", "40", "41", "42", "43"], material: "Couro sintético · Borracha" },
-  { id: 2, name: "Mochila Slim Carbon", price: 189.90, oldPrice: null, category: "Acessórios", description: "Mochila minimalista com acabamento em fibra de carbono. Compartimento acolchoado para notebook de até 15\", alças ergonômicas e zíper YKK.", sizes: ["Único"], material: "Fibra de carbono · Nylon" },
-  { id: 3, name: "Camiseta Oversized", price: 89.90, oldPrice: 129.90, category: "Vestuário", description: "100% algodão premium. Corte oversized moderno, gola ribana reforçada e costura dupla nas mangas. Lavável à máquina.", sizes: ["P", "M", "G", "GG", "XGG"], material: "100% Algodão" },
-  { id: 4, name: "Relógio Minimal", price: 459.90, oldPrice: null, category: "Acessórios", description: "Mostrador minimalista com pulseira de aço inoxidável. Resistente à água até 50m, mecanismo japonês de quartzo e visor de safira.", sizes: ["Único"], material: "Aço inoxidável · Safira" },
-];
-
-export default function ProdutoPage() {
-  const params = useParams();
-  const id = Number(params?.id);
-  const product = allProducts.find(p => p.id === id) ?? allProducts[0];
-
-  const [selectedSize, setSelectedSize] = useState<string>("");
+export default function ProductDetail({ product, cartSlot }: ProductDetailProps) {
+  const router = useRouter();
+  const [selectedVariant, setSelectedVariant] = useState<string>("");
   const [qty, setQty] = useState<number>(1);
   const [added, setAdded] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
-  const handleAdd = () => {
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
+  const soldOut = product.variants.every(v => !v.available);
+
+  const addItem = async (): Promise<boolean> => {
+    setError("");
+    const variantId = product.hasOptions ? selectedVariant : product.variants[0]?.id;
+    if (!variantId) {
+      setError("Selecione uma opção antes de continuar.");
+      return false;
+    }
+    setLoading(true);
+    const result = await addToCartAction(variantId, qty);
+    setLoading(false);
+    if (!result.ok) {
+      setError(result.error ?? "Não foi possível adicionar ao carrinho.");
+      return false;
+    }
+    return true;
+  };
+
+  const handleAdd = async () => {
+    if (await addItem()) {
+      setAdded(true);
+      setTimeout(() => setAdded(false), 2000);
+    }
+  };
+
+  const handleBuyNow = async () => {
+    if (await addItem()) router.push("/carrinho");
   };
 
   const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : null;
@@ -57,10 +72,7 @@ export default function ProdutoPage() {
         {/* Header */}
         <header style={{ borderBottom: "1px solid #ddd", padding: "0 60px", display: "flex", alignItems: "center", justifyContent: "space-between", height: "64px", background: "#f5f5f3" }}>
           <Link href="/" style={{ fontSize: "18px", fontWeight: "600", letterSpacing: "6px", color: "#111", textDecoration: "none" }}>ECANBUY</Link>
-          <Link href="/carrinho" style={{ display: "flex", alignItems: "center", gap: "8px", textDecoration: "none", color: "#111", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "1px" }}>
-            CARRINHO
-            <span style={{ background: "#111", color: "#f5f5f3", borderRadius: "50%", width: "18px", height: "18px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "9px" }}>0</span>
-          </Link>
+          {cartSlot}
         </header>
 
         {/* Breadcrumb */}
@@ -76,7 +88,11 @@ export default function ProdutoPage() {
 
           {/* Imagem */}
           <div style={{ background: "#eaeae8", borderRight: "1px solid #ddd", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", minHeight: "600px" }}>
-            <span style={{ fontSize: "180px", opacity: 0.08, fontFamily: "'Cormorant Garamond', serif" }}>◈</span>
+            {product.image ? (
+              <Image src={product.image} alt={product.name} fill priority sizes="50vw" style={{ objectFit: "cover" }} />
+            ) : (
+              <span style={{ fontSize: "180px", opacity: 0.08, fontFamily: "'Cormorant Garamond', serif" }}>◈</span>
+            )}
             {discount && (
               <div style={{ position: "absolute", top: "40px", left: "40px", background: "#111", color: "#f5f5f3", padding: "8px 16px", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "1px" }}>
                 −{discount}%
@@ -108,27 +124,26 @@ export default function ProdutoPage() {
               {product.description}
             </p>
 
-            <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "2px", color: "#bbb", marginBottom: "12px" }}>
-              MATERIAL: {product.material.toUpperCase()}
-            </p>
-
             <div style={{ height: "1px", background: "#ddd", marginBottom: "36px" }} />
 
-            {/* Tamanhos */}
-            {product.sizes.length > 1 && (
+            {/* Opções (tamanho, cor...) */}
+            {product.hasOptions && (
               <div style={{ marginBottom: "32px" }}>
-                <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "2px", color: "#aaa", marginBottom: "14px" }}>TAMANHO</p>
+                <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "2px", color: "#aaa", marginBottom: "14px" }}>OPÇÃO</p>
                 <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                  {product.sizes.map(size => (
-                    <button key={size} onClick={() => setSelectedSize(size)} className="size-btn"
+                  {product.variants.map(v => (
+                    <button key={v.id} onClick={() => setSelectedVariant(v.id)} className="size-btn" disabled={!v.available}
                       style={{
-                        background: selectedSize === size ? "#111" : "transparent",
-                        color: selectedSize === size ? "#f5f5f3" : "#888",
-                        border: `1px solid ${selectedSize === size ? "#111" : "#ddd"}`,
+                        background: selectedVariant === v.id ? "#111" : "transparent",
+                        color: selectedVariant === v.id ? "#f5f5f3" : "#888",
+                        border: `1px solid ${selectedVariant === v.id ? "#111" : "#ddd"}`,
                         padding: "10px 18px",
                         fontFamily: "'DM Mono', monospace", fontSize: "12px",
+                        opacity: v.available ? 1 : 0.35,
+                        cursor: v.available ? "pointer" : "not-allowed",
+                        textDecoration: v.available ? "none" : "line-through",
                       }}>
-                      {size}
+                      {v.title}
                     </button>
                   ))}
                 </div>
@@ -149,19 +164,22 @@ export default function ProdutoPage() {
 
             {/* Botões */}
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-              <button onClick={handleAdd} className="btn-add"
-                style={{ background: added ? "#555" : "#111", color: "#f5f5f3", padding: "16px", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "2px" }}>
-                {added ? "✓  ADICIONADO" : "ADICIONAR AO CARRINHO"}
+              <button onClick={handleAdd} className="btn-add" disabled={loading || soldOut}
+                style={{ background: added ? "#555" : "#111", color: "#f5f5f3", padding: "16px", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "2px", opacity: loading || soldOut ? 0.6 : 1 }}>
+                {soldOut ? "ESGOTADO" : loading ? "ADICIONANDO..." : added ? "✓  ADICIONADO" : "ADICIONAR AO CARRINHO"}
               </button>
-              <Link href="/carrinho" className="btn-outline"
-                style={{ border: "1px solid #ddd", color: "#111", padding: "16px", textAlign: "center", textDecoration: "none", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "2px" }}>
+              <button onClick={handleBuyNow} className="btn-outline" disabled={loading || soldOut}
+                style={{ border: "1px solid #ddd", background: "transparent", cursor: "pointer", color: "#111", padding: "16px", textAlign: "center", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "2px" }}>
                 COMPRAR AGORA
-              </Link>
+              </button>
+              {error && (
+                <p role="alert" style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", color: "#a33", letterSpacing: "1px" }}>{error}</p>
+              )}
             </div>
 
             {/* Info */}
             <div style={{ marginTop: "36px", paddingTop: "24px", borderTop: "1px solid #ddd", display: "flex", flexDirection: "column", gap: "8px" }}>
-              {["Frete grátis acima de R$299", "Troca em até 30 dias", "Pagamento 100% seguro", "Enviado em até 2 dias úteis"].map(info => (
+              {storeConfig.infoList.map(info => (
                 <p key={info} style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", color: "#bbb", letterSpacing: "1px" }}>— {info}</p>
               ))}
             </div>

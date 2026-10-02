@@ -15,22 +15,34 @@
 
 ## Sobre o projeto
 
-O EcanBuy é um estudo prático de e-commerce: catálogo de produtos, página de detalhe por rota dinâmica (`/produto/[id]`) e carrinho com gerenciamento de estado — cupom de desconto incluso.
+O EcanBuy é uma loja online de dropshipping. O front end é feito em Next.js e conversa com a Shopify pela Storefront API (modelo headless): catálogo, carrinho, cupons e checkout vêm da Shopify, e os produtos são importados de fornecedores pelo app DropshipBot, que também sincroniza e cumpre os pedidos.
+
+```
+Cliente  ->  EcanBuy (Next.js)  ->  Shopify Storefront API  ->  Checkout da Shopify
+                                          ^
+                              DropshipBot (importação de produtos e envio dos pedidos)
+```
+
+Sem as variáveis de ambiente da Shopify, o projeto roda em modo demonstração com um catálogo local, útil para desenvolver a interface.
 
 ## Tecnologias
 
-- **Framework:** Next.js 16 (App Router)
+- **Framework:** Next.js 16 (App Router, Server Components e Server Actions)
 - **Linguagem:** TypeScript
 - **UI:** React 19
-- **Estilização:** Tailwind CSS 4
+- **Estilização:** Tailwind CSS 4 e estilos inline
+- **E-commerce:** Shopify Storefront API (GraphQL)
+- **Importação e fulfillment:** DropshipBot (app da Shopify)
 - **Package manager:** npm
 
 ## Funcionalidades
 
-- [x] **Listagem de produtos** — catálogo com visualização detalhada
-- [x] **Rota dinâmica** — página de produto individual via `/produto/[id]`
-- [x] **Carrinho de compras** — adição/remoção de itens, seleção de tamanho e quantidade
-- [x] **Cupom de desconto** — aplicação e validação de cupom no carrinho
+- [x] **Catálogo** com dados da Shopify (categoria, preço, preço promocional, imagem)
+- [x] **Rota dinâmica** de produto por handle (`/produto/[handle]`), com escolha de variante
+- [x] **Carrinho** persistido na Shopify (cookie com o id do carrinho), com alteração de quantidade e remoção
+- [x] **Cupons de desconto** validados pela Shopify
+- [x] **Checkout** hospedado pela Shopify
+- [x] **Modo demonstração** com catálogo local quando a Shopify não está configurada
 - [x] **Interface responsiva**
 
 ## Como rodar o projeto
@@ -39,19 +51,41 @@ O EcanBuy é um estudo prático de e-commerce: catálogo de produtos, página de
 git clone https://github.com/MatheusAnsel/Ecanbuy.git
 cd Ecanbuy
 npm install
+cp .env.example .env.local
 npm run dev
 ```
 
 Abra [http://localhost:3000](http://localhost:3000).
 
+### Conectando à Shopify
+
+1. Crie a loja na Shopify e instale o app DropshipBot para importar produtos.
+2. Gere um token de acesso da Storefront API (app personalizado ou canal Headless).
+3. Preencha o `.env.local`:
+
+```
+SHOPIFY_STORE_DOMAIN=minha-loja.myshopify.com
+SHOPIFY_STOREFRONT_TOKEN=seu-token-publico-da-storefront
+```
+
+A versão da API pode ser trocada com `SHOPIFY_API_VERSION` (padrão em `src/lib/shopify.ts`).
+
 ## Estrutura
 
 ```
-src/app/
- ├── page.tsx              # Home
- ├── produtos/             # Listagem de produtos
- ├── produto/[id]/         # Página de detalhe (rota dinâmica)
- └── carrinho/             # Carrinho de compras
+src/
+ ├── app/
+ │    ├── page.tsx              # Home
+ │    ├── produtos/             # Listagem
+ │    ├── produto/[handle]/     # Detalhe do produto
+ │    ├── carrinho/             # Carrinho
+ │    └── actions.ts            # Server Actions do carrinho
+ ├── components/                # Componentes de interface
+ └── lib/
+      ├── shopify.ts            # Cliente da Storefront API
+      ├── cart-session.ts       # Leitura do carrinho pelo cookie
+      ├── mock-products.ts      # Catálogo do modo demonstração
+      └── store-config.ts       # Textos de política da loja
 ```
 
 ## Autor
