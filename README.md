@@ -2,12 +2,13 @@
 
 # EcanBuy
 
-**Marketplace** construído com Next.js (App Router) para praticar rotas dinâmicas, gerenciamento de estado e arquitetura de componentes.
+**Loja de dropshipping headless** construída com Next.js (App Router) e Shopify Storefront API, com tema escuro e carrinho, cupom e checkout integrados à Shopify.
 
 [![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=next.js&logoColor=white)](#)
 [![React](https://img.shields.io/badge/React_19-61DAFB?style=flat-square&logo=react&logoColor=black)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)](#)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS_4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](#)
+[![Shopify](https://img.shields.io/badge/Shopify_Storefront_API-7AB55C?style=flat-square&logo=shopify&logoColor=white)](#)
 
 </div>
 
@@ -30,7 +31,7 @@ Sem as variáveis de ambiente da Shopify, o projeto roda em modo demonstração 
 - **Framework:** Next.js 16 (App Router, Server Components e Server Actions)
 - **Linguagem:** TypeScript
 - **UI:** React 19
-- **Estilização:** Tailwind CSS 4 e estilos inline
+- **Estilização:** Tailwind CSS 4, estilos inline e variáveis CSS (tema escuro em `src/app/globals.css`)
 - **E-commerce:** Shopify Storefront API (GraphQL)
 - **Importação e fulfillment:** DropshipBot (app da Shopify)
 - **Package manager:** npm
@@ -43,6 +44,8 @@ Sem as variáveis de ambiente da Shopify, o projeto roda em modo demonstração 
 - [x] **Cupons de desconto** validados pela Shopify
 - [x] **Checkout** hospedado pela Shopify
 - [x] **Modo demonstração** com catálogo local quando a Shopify não está configurada
+- [x] **Tema escuro** em todo o site, controlado por variáveis CSS
+- [x] **Segurança:** validação das entradas das Server Actions, erros genéricos para o cliente, headers de segurança e dependências sem vulnerabilidades conhecidas (`npm audit`)
 - [x] **Interface responsiva**
 
 ## Como rodar o projeto
