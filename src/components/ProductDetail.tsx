@@ -63,80 +63,80 @@ export default function ProductDetail({ product, cartSlot }: ProductDetailProps)
         .btn-add { cursor: pointer; border: none; transition: opacity 0.2s; }
         .btn-add:hover { opacity: 0.85; }
         .btn-outline { transition: all 0.2s; }
-        .btn-outline:hover { background: #111 !important; color: #f5f5f3 !important; }
-        .breadcrumb-link:hover { color: #111 !important; }
+        .btn-outline:hover { background: var(--fg) !important; color: var(--bg) !important; }
+        .breadcrumb-link:hover { color: var(--fg) !important; }
       `}</style>
 
-      <div style={{ background: "#f5f5f3", minHeight: "100vh", fontFamily: "'Cormorant Garamond', serif", color: "#111" }}>
+      <div style={{ background: "var(--bg)", minHeight: "100vh", fontFamily: "'Cormorant Garamond', serif", color: "var(--fg)" }}>
 
         {/* Header */}
-        <header style={{ borderBottom: "1px solid #ddd", padding: "0 60px", display: "flex", alignItems: "center", justifyContent: "space-between", height: "64px", background: "#f5f5f3" }}>
-          <Link href="/" style={{ fontSize: "18px", fontWeight: "600", letterSpacing: "6px", color: "#111", textDecoration: "none" }}>ECANBUY</Link>
+        <header style={{ borderBottom: "1px solid var(--border)", padding: "0 60px", display: "flex", alignItems: "center", justifyContent: "space-between", height: "64px", background: "var(--bg)" }}>
+          <Link href="/" style={{ fontSize: "18px", fontWeight: "600", letterSpacing: "6px", color: "var(--fg)", textDecoration: "none" }}>ECANBUY</Link>
           {cartSlot}
         </header>
 
         {/* Breadcrumb */}
-        <div style={{ padding: "16px 60px", borderBottom: "1px solid #ddd", display: "flex", gap: "8px", fontFamily: "'DM Mono', monospace", fontSize: "10px", color: "#bbb", letterSpacing: "1px" }}>
-          <Link href="/" className="breadcrumb-link" style={{ color: "#bbb", textDecoration: "none" }}>HOME</Link>
+        <div style={{ padding: "16px 60px", borderBottom: "1px solid var(--border)", display: "flex", gap: "8px", fontFamily: "'DM Mono', monospace", fontSize: "10px", color: "var(--m3)", letterSpacing: "1px" }}>
+          <Link href="/" className="breadcrumb-link" style={{ color: "var(--m3)", textDecoration: "none" }}>HOME</Link>
           <span>/</span>
-          <Link href="/produtos" className="breadcrumb-link" style={{ color: "#bbb", textDecoration: "none" }}>PRODUTOS</Link>
+          <Link href="/produtos" className="breadcrumb-link" style={{ color: "var(--m3)", textDecoration: "none" }}>PRODUTOS</Link>
           <span>/</span>
-          <span style={{ color: "#111" }}>{product.name.toUpperCase()}</span>
+          <span style={{ color: "var(--fg)" }}>{product.name.toUpperCase()}</span>
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: "calc(100vh - 97px)" }}>
 
           {/* Imagem */}
-          <div style={{ background: "#eaeae8", borderRight: "1px solid #ddd", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", minHeight: "600px" }}>
+          <div style={{ background: "var(--surface)", borderRight: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", minHeight: "600px" }}>
             {product.image ? (
               <Image src={product.image} alt={product.name} fill priority sizes="50vw" style={{ objectFit: "cover" }} />
             ) : (
               <span style={{ fontSize: "180px", opacity: 0.08, fontFamily: "'Cormorant Garamond', serif" }}>◈</span>
             )}
             {discount && (
-              <div style={{ position: "absolute", top: "40px", left: "40px", background: "#111", color: "#f5f5f3", padding: "8px 16px", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "1px" }}>
+              <div style={{ position: "absolute", top: "40px", left: "40px", background: "var(--fg)", color: "var(--bg)", padding: "8px 16px", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "1px" }}>
                 −{discount}%
               </div>
             )}
-            <div style={{ position: "absolute", bottom: "40px", right: "40px", fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "2px", color: "#bbb", writingMode: "vertical-rl" }}>
+            <div style={{ position: "absolute", bottom: "40px", right: "40px", fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "2px", color: "var(--m3)", writingMode: "vertical-rl" }}>
               {product.category.toUpperCase()}
             </div>
           </div>
 
           {/* Detalhes */}
           <div style={{ padding: "60px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "4px", color: "#aaa", marginBottom: "12px" }}>{product.category.toUpperCase()}</p>
+            <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "4px", color: "var(--m2)", marginBottom: "12px" }}>{product.category.toUpperCase()}</p>
             <h1 style={{ fontSize: "44px", fontWeight: "300", letterSpacing: "-1px", lineHeight: "1.1", marginBottom: "28px" }}>{product.name}</h1>
 
             {/* Preço */}
-            <div style={{ display: "flex", alignItems: "baseline", gap: "16px", marginBottom: "36px", paddingBottom: "36px", borderBottom: "1px solid #ddd" }}>
-              <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "28px", color: "#111" }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: "16px", marginBottom: "36px", paddingBottom: "36px", borderBottom: "1px solid var(--border)" }}>
+              <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "28px", color: "var(--fg)" }}>
                 R$ {product.price.toFixed(2).replace(".", ",")}
               </span>
               {product.oldPrice && (
-                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "18px", color: "#ccc", textDecoration: "line-through" }}>
+                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "18px", color: "var(--m4)", textDecoration: "line-through" }}>
                   R$ {product.oldPrice.toFixed(2).replace(".", ",")}
                 </span>
               )}
             </div>
 
-            <p style={{ color: "#888", fontSize: "16px", lineHeight: "1.75", marginBottom: "36px", fontWeight: "300" }}>
+            <p style={{ color: "var(--m1)", fontSize: "16px", lineHeight: "1.75", marginBottom: "36px", fontWeight: "300" }}>
               {product.description}
             </p>
 
-            <div style={{ height: "1px", background: "#ddd", marginBottom: "36px" }} />
+            <div style={{ height: "1px", background: "var(--border)", marginBottom: "36px" }} />
 
             {/* Opções (tamanho, cor...) */}
             {product.hasOptions && (
               <div style={{ marginBottom: "32px" }}>
-                <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "2px", color: "#aaa", marginBottom: "14px" }}>OPÇÃO</p>
+                <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "2px", color: "var(--m2)", marginBottom: "14px" }}>OPÇÃO</p>
                 <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                   {product.variants.map(v => (
                     <button key={v.id} onClick={() => setSelectedVariant(v.id)} className="size-btn" disabled={!v.available}
                       style={{
-                        background: selectedVariant === v.id ? "#111" : "transparent",
-                        color: selectedVariant === v.id ? "#f5f5f3" : "#888",
-                        border: `1px solid ${selectedVariant === v.id ? "#111" : "#ddd"}`,
+                        background: selectedVariant === v.id ? "var(--fg)" : "transparent",
+                        color: selectedVariant === v.id ? "var(--bg)" : "var(--m1)",
+                        border: `1px solid ${selectedVariant === v.id ? "var(--fg)" : "var(--border)"}`,
                         padding: "10px 18px",
                         fontFamily: "'DM Mono', monospace", fontSize: "12px",
                         opacity: v.available ? 1 : 0.35,
@@ -152,35 +152,35 @@ export default function ProductDetail({ product, cartSlot }: ProductDetailProps)
 
             {/* Quantidade */}
             <div style={{ marginBottom: "32px" }}>
-              <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "2px", color: "#aaa", marginBottom: "14px" }}>QUANTIDADE</p>
-              <div style={{ display: "inline-flex", alignItems: "center", border: "1px solid #ddd" }}>
+              <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "2px", color: "var(--m2)", marginBottom: "14px" }}>QUANTIDADE</p>
+              <div style={{ display: "inline-flex", alignItems: "center", border: "1px solid var(--border)" }}>
                 <button onClick={() => setQty(q => Math.max(1, q - 1))} className="qty-btn"
-                  style={{ padding: "10px 20px", fontFamily: "'DM Mono', monospace", fontSize: "18px", color: "#888" }}>−</button>
-                <span style={{ padding: "10px 24px", fontFamily: "'DM Mono', monospace", fontSize: "14px", borderLeft: "1px solid #ddd", borderRight: "1px solid #ddd" }}>{qty}</span>
+                  style={{ padding: "10px 20px", fontFamily: "'DM Mono', monospace", fontSize: "18px", color: "var(--m1)" }}>−</button>
+                <span style={{ padding: "10px 24px", fontFamily: "'DM Mono', monospace", fontSize: "14px", borderLeft: "1px solid var(--border)", borderRight: "1px solid var(--border)" }}>{qty}</span>
                 <button onClick={() => setQty(q => q + 1)} className="qty-btn"
-                  style={{ padding: "10px 20px", fontFamily: "'DM Mono', monospace", fontSize: "18px", color: "#888" }}>+</button>
+                  style={{ padding: "10px 20px", fontFamily: "'DM Mono', monospace", fontSize: "18px", color: "var(--m1)" }}>+</button>
               </div>
             </div>
 
             {/* Botões */}
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
               <button onClick={handleAdd} className="btn-add" disabled={loading || soldOut}
-                style={{ background: added ? "#555" : "#111", color: "#f5f5f3", padding: "16px", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "2px", opacity: loading || soldOut ? 0.6 : 1 }}>
+                style={{ background: added ? "var(--badge)" : "var(--fg)", color: "var(--bg)", padding: "16px", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "2px", opacity: loading || soldOut ? 0.6 : 1 }}>
                 {soldOut ? "ESGOTADO" : loading ? "ADICIONANDO..." : added ? "✓  ADICIONADO" : "ADICIONAR AO CARRINHO"}
               </button>
               <button onClick={handleBuyNow} className="btn-outline" disabled={loading || soldOut}
-                style={{ border: "1px solid #ddd", background: "transparent", cursor: "pointer", color: "#111", padding: "16px", textAlign: "center", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "2px" }}>
+                style={{ border: "1px solid var(--border)", background: "transparent", cursor: "pointer", color: "var(--fg)", padding: "16px", textAlign: "center", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "2px" }}>
                 COMPRAR AGORA
               </button>
               {error && (
-                <p role="alert" style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", color: "#a33", letterSpacing: "1px" }}>{error}</p>
+                <p role="alert" style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", color: "var(--danger)", letterSpacing: "1px" }}>{error}</p>
               )}
             </div>
 
             {/* Info */}
-            <div style={{ marginTop: "36px", paddingTop: "24px", borderTop: "1px solid #ddd", display: "flex", flexDirection: "column", gap: "8px" }}>
+            <div style={{ marginTop: "36px", paddingTop: "24px", borderTop: "1px solid var(--border)", display: "flex", flexDirection: "column", gap: "8px" }}>
               {storeConfig.infoList.map(info => (
-                <p key={info} style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", color: "#bbb", letterSpacing: "1px" }}>— {info}</p>
+                <p key={info} style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", color: "var(--m3)", letterSpacing: "1px" }}>— {info}</p>
               ))}
             </div>
           </div>
