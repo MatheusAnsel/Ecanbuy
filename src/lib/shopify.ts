@@ -5,7 +5,9 @@ import { mockProducts } from "./mock-products";
 // Use APENAS o token da Storefront API. Nunca use o token Admin (shpat_...).
 const domain = process.env.SHOPIFY_STORE_DOMAIN;
 const token = process.env.SHOPIFY_STOREFRONT_TOKEN;
-const apiVersion = process.env.SHOPIFY_API_VERSION ?? "2026-07";
+// `||` e não `??`: o .env.example traz SHOPIFY_API_VERSION em branco, e variável vazia
+// chega como "" (não undefined). Com `??` a URL ficaria /api//graphql.json e a loja quebraria.
+const apiVersion = process.env.SHOPIFY_API_VERSION?.trim() || "2026-07";
 
 export const isShopifyConfigured = Boolean(domain && token);
 
