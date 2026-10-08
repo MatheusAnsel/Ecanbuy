@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qualidade:
+    name: Lint, tipos, testes e build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Auditar dependências de produção
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Tipos
+        run: npm run typecheck
+
+      - name: Testes com cobertura (falha abaixo do piso configurado)
+        run: npm run test:coverage | tee coverage.txt
+
+      - name: Resumo de cobertura no painel da execução
+        if: always()
+        run: |
+          {
+            echo "### Cobertura"
+            echo '```'
+            sed -n '/Coverage summary/,/^=*$/p' coverage.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # Sem variáveis da Shopify, o build roda em modo demonstração. O Next baixa a fonte
+      # (Google Fonts) durante o build, por isso este passo precisa de internet.
+      - name: Build
+        run: npm run build
