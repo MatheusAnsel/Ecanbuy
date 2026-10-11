@@ -230,7 +230,7 @@ describe("mapeamento de produtos", () => {
     expect((await shop.getProducts()).map((p) => p.hasOptions)).toEqual([false, true, true]);
   });
 
-  it("usa 'Geral' quando não há categoria, null quando não há imagem e preço 0 sem variantes", async () => {
+  it("usa 'Geral' quando não há categoria, imagem de exemplo quando não há foto e preço 0 sem variantes", async () => {
     const shop = await carregar(CONFIGURADA);
     fetchMock.mockResolvedValue(
       resposta({
@@ -241,7 +241,7 @@ describe("mapeamento de produtos", () => {
     const [p] = await shop.getProducts();
 
     expect(p.category).toBe("Geral");
-    expect(p.image).toBeNull();
+    expect(p.image).toMatch(/^\/mock\/[a-z-]+\.webp$/);
     expect(p.price).toBe(0);
     expect(p.oldPrice).toBeNull();
     expect(p.hasOptions).toBe(false);
@@ -313,7 +313,7 @@ describe("mapeamento do carrinho", () => {
     expect(await shop.getCart("gid://shopify/Cart/expirado")).toBeNull();
   });
 
-  it("usa 'Geral' e imagem nula nas linhas sem categoria ou foto", async () => {
+  it("usa 'Geral' e imagem de exemplo nas linhas sem categoria ou foto", async () => {
     const shop = await carregar(CONFIGURADA);
     const linha = noCarrinho().lines.nodes[0];
     linha.merchandise.product = { ...linha.merchandise.product, productType: "", featuredImage: null as never };
@@ -322,7 +322,7 @@ describe("mapeamento do carrinho", () => {
     const cart = await shop.getCart("x");
 
     expect(cart?.lines[0].category).toBe("Geral");
-    expect(cart?.lines[0].image).toBeNull();
+    expect(cart?.lines[0].image).toMatch(/^\/mock\/[a-z-]+\.webp$/);
   });
 
   it.each([

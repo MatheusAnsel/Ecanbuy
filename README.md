@@ -52,7 +52,7 @@ sequenceDiagram
     Note over A,N: Erro interno vira uma mensagem genérica para o cliente, e o detalhe vai só para o log
 ```
 
-Sem as variáveis de ambiente da Shopify, o projeto roda em modo demonstração com um catálogo local (com ilustrações em `public/mock`), útil para desenvolver a interface. Ao configurar `SHOPIFY_STORE_DOMAIN` e `SHOPIFY_STOREFRONT_TOKEN`, os produtos, preços, categorias (tipo de produto) e fotos passam a vir da Shopify automaticamente.
+Sem as variáveis de ambiente da Shopify, o projeto roda em modo demonstração com um catálogo local (com ilustrações em `public/mock`), útil para desenvolver a interface. Ao configurar `SHOPIFY_STORE_DOMAIN` e `SHOPIFY_STOREFRONT_TOKEN`, os produtos, preços, categorias (tipo de produto) e fotos passam a vir da Shopify automaticamente. Produtos da Shopify que ainda não tenham foto recebem uma imagem de exemplo (escolhida pelo nome ou categoria, em `src/lib/fallback-images.ts`), que some assim que a foto real é cadastrada.
 
 ## Tecnologias
 

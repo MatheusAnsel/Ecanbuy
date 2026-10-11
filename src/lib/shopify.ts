@@ -1,5 +1,6 @@
 import type { Cart, CartLine, Product } from "./types";
 import { mockProducts } from "./mock-products";
+import { fallbackImage } from "./fallback-images";
 
 // Estas variáveis são lidas só no servidor (sem prefixo NEXT_PUBLIC_).
 // Use APENAS o token da Storefront API. Nunca use o token Admin (shpat_...).
@@ -105,7 +106,7 @@ function mapProduct(node: ProductNode): Product {
     oldPrice: compare !== null && compare > price ? compare : null,
     category: node.productType || "Geral",
     description: node.description,
-    image: node.featuredImage?.url ?? null,
+    image: node.featuredImage?.url ?? fallbackImage(node.title, node.productType || "Geral", node.handle),
     isNew: Date.now() - new Date(node.createdAt).getTime() < THIRTY_DAYS,
     hasOptions,
     variants: variants.map((v) => ({ id: v.id, title: v.title, available: v.availableForSale })),
@@ -216,7 +217,9 @@ function mapCart(node: CartNode): Cart {
     name: l.merchandise.product.title,
     handle: l.merchandise.product.handle,
     category: l.merchandise.product.productType || "Geral",
-    image: l.merchandise.product.featuredImage?.url ?? null,
+    image:
+      l.merchandise.product.featuredImage?.url ??
+      fallbackImage(l.merchandise.product.title, l.merchandise.product.productType || "Geral", l.merchandise.product.handle),
   }));
 
   return {
