@@ -6,9 +6,12 @@ export default async function CartLink() {
   const count = cart?.totalQuantity ?? 0;
 
   return (
-    <Link href="/carrinho" style={{ display: "flex", alignItems: "center", gap: "8px", textDecoration: "none", color: "var(--fg)", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "11px", letterSpacing: "1px" }}>
-      CARRINHO
-      <span style={{ background: "var(--fg)", color: "var(--bg)", borderRadius: "50%", width: "18px", height: "18px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "9px" }}>{count}</span>
+    <Link href="/carrinho" className="cart-link" aria-label={`Carrinho, ${count} ${count === 1 ? "item" : "itens"}`}>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+        <path d="M5 8h14l-1 12H6L5 8Z" strokeLinejoin="round" />
+        <path d="M9 8V6a3 3 0 0 1 6 0v2" strokeLinecap="round" />
+      </svg>
+      <span>{count}</span>
     </Link>
   );
 }

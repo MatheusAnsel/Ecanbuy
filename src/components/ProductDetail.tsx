@@ -6,6 +6,9 @@ import { useRouter } from "next/navigation";
 import type { Product } from "@/lib/types";
 import { addToCartAction } from "@/app/actions";
 import { storeConfig } from "@/lib/store-config";
+import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
+import { brl } from "@/components/ProductCard";
 
 interface ProductDetailProps {
   product: Product;
@@ -20,7 +23,7 @@ export default function ProductDetail({ product, cartSlot }: ProductDetailProps)
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
-  const soldOut = product.variants.every(v => !v.available);
+  const soldOut = product.variants.every((v) => !v.available);
 
   const addItem = async (): Promise<boolean> => {
     setError("");
@@ -53,138 +56,91 @@ export default function ProductDetail({ product, cartSlot }: ProductDetailProps)
   const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : null;
 
   return (
-    <>
-      <style>{`
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        .size-btn { cursor: pointer; border: none; transition: all 0.15s; }
-        .qty-btn { cursor: pointer; border: none; background: transparent; transition: opacity 0.2s; }
-        .qty-btn:hover { opacity: 0.5; }
-        .btn-add { cursor: pointer; border: none; transition: opacity 0.2s; }
-        .btn-add:hover { opacity: 0.85; }
-        .btn-outline { transition: all 0.2s; }
-        .btn-outline:hover { background: var(--fg) !important; color: var(--bg) !important; }
-        .breadcrumb-link:hover { color: var(--fg) !important; }
-      `}</style>
+    <div className="page">
+      <SiteHeader cartSlot={cartSlot} />
 
-      <div style={{ background: "var(--bg)", minHeight: "100vh", fontFamily: "var(--font-display), 'Arial Narrow', Arial, sans-serif", color: "var(--fg)" }}>
-
-        {/* Header */}
-        <header style={{ borderBottom: "1px solid var(--border)", padding: "0 60px", display: "flex", alignItems: "center", justifyContent: "space-between", height: "64px", background: "var(--bg)" }}>
-          <Link href="/" style={{ fontSize: "30px", fontWeight: "800", letterSpacing: "0px", color: "var(--fg)", textDecoration: "none" }}>ECANBUY</Link>
-          {cartSlot}
-        </header>
-
-        {/* Breadcrumb */}
-        <div style={{ padding: "16px 60px", borderBottom: "1px solid var(--border)", display: "flex", gap: "8px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", color: "var(--m3)", letterSpacing: "1px" }}>
-          <Link href="/" className="breadcrumb-link" style={{ color: "var(--m3)", textDecoration: "none" }}>HOME</Link>
+      <div className="wrap">
+        <nav className="crumbs pad" aria-label="Você está em">
+          <Link href="/">Início</Link>
           <span>/</span>
-          <Link href="/produtos" className="breadcrumb-link" style={{ color: "var(--m3)", textDecoration: "none" }}>PRODUTOS</Link>
+          <Link href="/produtos">Produtos</Link>
           <span>/</span>
-          <span style={{ color: "var(--fg)" }}>{product.name.toUpperCase()}</span>
-        </div>
+          <Link href={`/produtos?categoria=${encodeURIComponent(product.category)}`}>{product.category}</Link>
+        </nav>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: "calc(100vh - 97px)" }}>
-
-          {/* Imagem */}
-          <div style={{ background: "var(--surface)", borderRight: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", minHeight: "600px" }}>
+        <div className="pdp pad">
+          <div className="pdp-media">
             {product.image ? (
-              <Image src={product.image} alt={product.name} fill priority sizes="50vw" style={{ objectFit: "cover" }} />
+              <Image src={product.image} alt={product.name} fill priority sizes="(max-width: 900px) 100vw, 58vw" style={{ objectFit: "cover" }} />
             ) : (
-              <span style={{ fontSize: "180px", opacity: 0.08, fontFamily: "var(--font-display), 'Arial Narrow', Arial, sans-serif" }}>◈</span>
+              <span className="card-ph display" aria-hidden style={{ fontSize: "220px" }}>EB</span>
             )}
-            {discount && (
-              <div style={{ position: "absolute", top: "40px", left: "40px", background: "var(--fg)", color: "var(--bg)", padding: "8px 16px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "11px", letterSpacing: "1px" }}>
-                −{discount}%
-              </div>
-            )}
-            <div style={{ position: "absolute", bottom: "40px", right: "40px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", letterSpacing: "2px", color: "var(--m3)", writingMode: "vertical-rl" }}>
-              {product.category.toUpperCase()}
-            </div>
           </div>
 
-          {/* Detalhes */}
-          <div style={{ padding: "60px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <p style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", letterSpacing: "4px", color: "var(--m2)", marginBottom: "12px" }}>{product.category.toUpperCase()}</p>
-            <h1 style={{ fontSize: "44px", fontWeight: "800", letterSpacing: "-1px", lineHeight: "1.1", marginBottom: "28px" }}>{product.name}</h1>
-
-            {/* Preço */}
-            <div style={{ display: "flex", alignItems: "baseline", gap: "16px", marginBottom: "36px", paddingBottom: "36px", borderBottom: "1px solid var(--border)" }}>
-              <span style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "28px", color: "var(--fg)" }}>
-                R$ {product.price.toFixed(2).replace(".", ",")}
-              </span>
-              {product.oldPrice && (
-                <span style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "18px", color: "var(--m4)", textDecoration: "line-through" }}>
-                  R$ {product.oldPrice.toFixed(2).replace(".", ",")}
-                </span>
-              )}
-            </div>
-
-            <p style={{ color: "var(--m1)", fontSize: "16px", lineHeight: "1.7", marginBottom: "36px", fontWeight: "400", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif" }}>
-              {product.description}
+          <div className="pdp-info">
+            <h1 className="display pdp-name">{product.name}</h1>
+            <p className="pdp-cat">{product.category}</p>
+            <p className="pdp-price">
+              <span>{brl(product.price)}</span>
+              {product.oldPrice && <s>{brl(product.oldPrice)}</s>}
+              {discount ? <span className="pdp-off">{discount}% off</span> : null}
             </p>
 
-            <div style={{ height: "1px", background: "var(--border)", marginBottom: "36px" }} />
-
-            {/* Opções (tamanho, cor...) */}
             {product.hasOptions && (
-              <div style={{ marginBottom: "32px" }}>
-                <p style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", letterSpacing: "2px", color: "var(--m2)", marginBottom: "14px" }}>OPÇÃO</p>
-                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                  {product.variants.map(v => (
-                    <button key={v.id} onClick={() => setSelectedVariant(v.id)} className="size-btn" disabled={!v.available}
-                      style={{
-                        background: selectedVariant === v.id ? "var(--fg)" : "transparent",
-                        color: selectedVariant === v.id ? "var(--bg)" : "var(--m1)",
-                        border: `1px solid ${selectedVariant === v.id ? "var(--fg)" : "var(--border)"}`,
-                        padding: "10px 18px",
-                        fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "12px",
-                        opacity: v.available ? 1 : 0.35,
-                        cursor: v.available ? "pointer" : "not-allowed",
-                        textDecoration: v.available ? "none" : "line-through",
-                      }}>
+              <>
+                <div className="pdp-label"><span>Selecione a opção</span></div>
+                <div className="opts">
+                  {product.variants.map((v) => (
+                    <button
+                      key={v.id}
+                      className="opt"
+                      disabled={!v.available}
+                      aria-pressed={selectedVariant === v.id}
+                      onClick={() => setSelectedVariant(v.id)}
+                    >
                       {v.title}
                     </button>
                   ))}
                 </div>
-              </div>
+              </>
             )}
 
-            {/* Quantidade */}
-            <div style={{ marginBottom: "32px" }}>
-              <p style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", letterSpacing: "2px", color: "var(--m2)", marginBottom: "14px" }}>QUANTIDADE</p>
-              <div style={{ display: "inline-flex", alignItems: "center", border: "1px solid var(--border)" }}>
-                <button onClick={() => setQty(q => Math.max(1, q - 1))} className="qty-btn"
-                  style={{ padding: "10px 20px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "18px", color: "var(--m1)" }}>−</button>
-                <span style={{ padding: "10px 24px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "14px", borderLeft: "1px solid var(--border)", borderRight: "1px solid var(--border)" }}>{qty}</span>
-                <button onClick={() => setQty(q => q + 1)} className="qty-btn"
-                  style={{ padding: "10px 20px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "18px", color: "var(--m1)" }}>+</button>
-              </div>
+            <div className="pdp-label"><span>Quantidade</span></div>
+            <div className="qty">
+              <button onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label="Diminuir">−</button>
+              <span>{qty}</span>
+              <button onClick={() => setQty((q) => q + 1)} aria-label="Aumentar">+</button>
             </div>
 
-            {/* Botões */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-              <button onClick={handleAdd} className="btn-add" disabled={loading || soldOut}
-                style={{ background: added ? "var(--badge)" : "var(--fg)", color: "var(--bg)", padding: "16px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "11px", letterSpacing: "2px", opacity: loading || soldOut ? 0.6 : 1 }}>
-                {soldOut ? "ESGOTADO" : loading ? "ADICIONANDO..." : added ? "✓  ADICIONADO" : "ADICIONAR AO CARRINHO"}
+            <div className="pdp-actions">
+              <button className="btn-pill" onClick={handleAdd} disabled={loading || soldOut}>
+                {soldOut ? "Esgotado" : loading ? "Adicionando..." : added ? "Adicionado ✓" : "Adicionar ao carrinho"}
               </button>
-              <button onClick={handleBuyNow} className="btn-outline" disabled={loading || soldOut}
-                style={{ border: "1px solid var(--border)", background: "transparent", cursor: "pointer", color: "var(--fg)", padding: "16px", textAlign: "center", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "11px", letterSpacing: "2px" }}>
-                COMPRAR AGORA
+              <button className="btn-pill btn-pill-outline" onClick={handleBuyNow} disabled={loading || soldOut}>
+                Comprar agora
               </button>
-              {error && (
-                <p role="alert" style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", color: "var(--danger)", letterSpacing: "1px" }}>{error}</p>
-              )}
+              {error && <p role="alert" className="err">{error}</p>}
             </div>
 
-            {/* Info */}
-            <div style={{ marginTop: "36px", paddingTop: "24px", borderTop: "1px solid var(--border)", display: "flex", flexDirection: "column", gap: "8px" }}>
-              {storeConfig.infoList.map(info => (
-                <p key={info} style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", color: "var(--m3)", letterSpacing: "1px" }}>— {info}</p>
-              ))}
+            <div className="acc">
+              <details open>
+                <summary>Descrição</summary>
+                <p>{product.description}</p>
+              </details>
+              <details>
+                <summary>Envio e pagamento</summary>
+                <ul>
+                  {storeConfig.infoList.map((info) => (
+                    <li key={info}>{info}</li>
+                  ))}
+                </ul>
+              </details>
             </div>
           </div>
         </div>
       </div>
-    </>
+
+      <SiteFooter />
+    </div>
   );
 }

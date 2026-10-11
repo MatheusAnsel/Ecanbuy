@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
+import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
 import { useState } from "react";
 import type { Cart } from "@/lib/types";
 import { applyDiscountAction, removeLineAction, updateLineAction } from "@/app/actions";
@@ -41,173 +43,92 @@ export default function CarrinhoClient({ cart, configured }: CarrinhoClientProps
   };
 
   return (
-    <>
-      <style>{`
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        .remove-btn { cursor: pointer; border: none; background: transparent; transition: color 0.2s; }
-        .remove-btn:hover { color: var(--fg) !important; }
-        .qty-btn { cursor: pointer; border: none; background: transparent; transition: opacity 0.2s; }
-        .qty-btn:hover { opacity: 0.4; }
-        .checkout-btn { cursor: pointer; border: none; transition: opacity 0.2s; }
-        .checkout-btn:hover { opacity: 0.8; }
-        .continue-link:hover { color: var(--fg) !important; }
-        .coupon-btn { cursor: pointer; border: none; transition: all 0.2s; }
-        .coupon-btn:hover { background: var(--fg) !important; color: var(--bg) !important; }
-      `}</style>
+    <div className="page">
+      <SiteHeader cartSlot={<span />} />
 
-      <div style={{ background: "var(--bg)", minHeight: "100vh", fontFamily: "var(--font-display), 'Arial Narrow', Arial, sans-serif", color: "var(--fg)" }}>
-
-        {/* Header */}
-        <header style={{ borderBottom: "1px solid var(--border)", padding: "0 60px", display: "flex", alignItems: "center", justifyContent: "space-between", height: "64px", background: "var(--bg)" }}>
-          <Link href="/" style={{ fontSize: "30px", fontWeight: "800", letterSpacing: "0px", color: "var(--fg)", textDecoration: "none" }}>ECANBUY</Link>
-          <Link href="/produtos" className="continue-link"
-            style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "11px", color: "var(--m2)", textDecoration: "none", letterSpacing: "1px" }}>
-            ← CONTINUAR COMPRANDO
-          </Link>
-        </header>
-
-        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "60px" }}>
-
-          {/* Título */}
-          <div style={{ marginBottom: "56px", borderBottom: "1px solid var(--border)", paddingBottom: "24px" }}>
-            <p style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", letterSpacing: "4px", color: "var(--m2)", marginBottom: "10px" }}>RESUMO</p>
-            <h1 style={{ fontSize: "56px", fontWeight: "800", letterSpacing: "-2px" }}>
-              Carrinho {items.length > 0 && <span style={{ color: "var(--m4)", fontSize: "40px" }}>({cart?.totalQuantity ?? 0})</span>}
+      <div className="wrap">
+        <div className="bag pad">
+          <section>
+            <h1 className="display bag-title">
+              Carrinho {items.length > 0 && <span style={{ color: "var(--m2)" }}>({cart?.totalQuantity ?? 0})</span>}
             </h1>
-          </div>
 
-          {!configured && (
-            <p style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", color: "var(--danger)", letterSpacing: "1px", marginBottom: "32px" }}>
-              Modo demonstração: a loja ainda não está conectada à Shopify.
-            </p>
-          )}
+            {!configured && (
+              <p className="err" style={{ marginTop: "12px" }}>
+                Modo demonstração: a loja ainda não está conectada à Shopify.
+              </p>
+            )}
 
-          {items.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "100px 0" }}>
-              <p style={{ fontSize: "64px", opacity: 0.15, marginBottom: "32px" }}>◈</p>
-              <p style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "12px", color: "var(--m3)", letterSpacing: "2px", marginBottom: "36px" }}>SEU CARRINHO ESTÁ VAZIO</p>
-              <Link href="/produtos"
-                style={{ background: "var(--fg)", color: "var(--bg)", padding: "14px 40px", textDecoration: "none", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "11px", letterSpacing: "2px" }}>
-                VER PRODUTOS
-              </Link>
-            </div>
-          ) : (
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 360px", gap: "80px", alignItems: "start" }}>
-
-              {/* Itens */}
-              <div>
-                {/* Cabeçalho da lista */}
-                <div style={{ display: "grid", gridTemplateColumns: "80px 1fr 120px 80px", gap: "20px", paddingBottom: "16px", borderBottom: "1px solid var(--border)", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "9px", letterSpacing: "2px", color: "var(--m3)" }}>
-                  <span></span>
-                  <span>PRODUTO</span>
-                  <span style={{ textAlign: "center" }}>QTD.</span>
-                  <span style={{ textAlign: "right" }}>TOTAL</span>
-                </div>
-
-                {items.map(item => (
-                  <div key={item.id} style={{ display: "grid", gridTemplateColumns: "80px 1fr 120px 80px", gap: "20px", alignItems: "center", padding: "28px 0", borderBottom: "1px solid var(--border)" }}>
-
-                    {/* Thumb */}
-                    <div style={{ background: "var(--surface)", aspectRatio: "1", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
+            {items.length === 0 ? (
+              <div style={{ padding: "64px 0" }}>
+                <p style={{ fontSize: "18px", marginBottom: "24px" }}>Seu carrinho está vazio.</p>
+                <Link href="/produtos" className="btn">Ver produtos <span aria-hidden>→</span></Link>
+              </div>
+            ) : (
+              <div style={{ marginTop: "16px", borderTop: "1px solid var(--border)" }}>
+                {items.map((item) => (
+                  <div key={item.id} className="bag-line">
+                    <div className="bag-thumb">
                       {item.image ? (
-                        <Image src={item.image} alt={item.name} fill sizes="80px" style={{ objectFit: "cover" }} />
+                        <Image src={item.image} alt={item.name} fill sizes="150px" style={{ objectFit: "cover" }} />
                       ) : (
-                        <span style={{ fontSize: "28px", opacity: 0.15 }}>◈</span>
+                        <span className="card-ph display" aria-hidden style={{ fontSize: "48px" }}>EB</span>
                       )}
                     </div>
-
-                    {/* Info */}
                     <div>
-                      <p style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "9px", letterSpacing: "3px", color: "var(--m3)", marginBottom: "4px" }}>{item.category.toUpperCase()}</p>
-                      <p style={{ fontSize: "19px", fontWeight: "400", marginBottom: "4px" }}>{item.name}</p>
-                      {item.variantTitle !== "Default Title" && (
-                        <p style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", color: "var(--m3)", marginBottom: "12px" }}>OPÇÃO: {item.variantTitle}</p>
-                      )}
-                      <button onClick={() => removeItem(item.id)} disabled={busy} className="remove-btn"
-                        style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "9px", color: "var(--m4)", letterSpacing: "1px", padding: 0, textDecoration: "underline", textUnderlineOffset: "3px" }}>
-                        REMOVER
-                      </button>
+                      <p className="bag-name">{item.name}</p>
+                      <p className="bag-meta">{item.category}</p>
+                      {item.variantTitle !== "Default Title" && <p className="bag-meta">Opção: {item.variantTitle}</p>}
+                      <div style={{ display: "flex", alignItems: "center", gap: "20px", marginTop: "16px" }}>
+                        <div className="qty">
+                          <button onClick={() => updateQty(item.id, item.quantity - 1)} disabled={busy} aria-label="Diminuir">−</button>
+                          <span>{item.quantity}</span>
+                          <button onClick={() => updateQty(item.id, item.quantity + 1)} disabled={busy} aria-label="Aumentar">+</button>
+                        </div>
+                        <button className="text-btn" onClick={() => removeItem(item.id)} disabled={busy}>Remover</button>
+                      </div>
                     </div>
-
-                    {/* Qty */}
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid var(--border)" }}>
-                      <button onClick={() => updateQty(item.id, item.quantity - 1)} disabled={busy} className="qty-btn"
-                        style={{ padding: "6px 12px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "16px", color: "var(--m1)" }}>−</button>
-                      <span style={{ padding: "6px 12px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "13px", borderLeft: "1px solid var(--border)", borderRight: "1px solid var(--border)" }}>{item.quantity}</span>
-                      <button onClick={() => updateQty(item.id, item.quantity + 1)} disabled={busy} className="qty-btn"
-                        style={{ padding: "6px 12px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "16px", color: "var(--m1)" }}>+</button>
-                    </div>
-
-                    {/* Preço */}
-                    <div style={{ textAlign: "right" }}>
-                      <span style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "15px", color: "var(--fg)" }}>
-                        R$ {brl(item.total)}
-                      </span>
-                    </div>
+                    <p style={{ fontWeight: 600 }}>R$ {brl(item.total)}</p>
                   </div>
                 ))}
               </div>
+            )}
+          </section>
 
-              {/* Resumo */}
-              <div style={{ position: "sticky", top: "80px" }}>
-                <div style={{ border: "1px solid var(--border)", padding: "36px" }}>
-                  <h2 style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "11px", letterSpacing: "3px", color: "var(--m2)", marginBottom: "28px" }}>RESUMO DO PEDIDO</h2>
+          {items.length > 0 && (
+            <aside className="summary">
+              <h2 className="display">Resumo</h2>
 
-                  {/* Cupom */}
-                  <div style={{ marginBottom: "28px" }}>
-                    <div style={{ display: "flex", gap: "0" }}>
-                      <input type="text" placeholder="CUPOM DE DESCONTO"
-                        value={coupon}
-                        onChange={e => { setCoupon(e.target.value); setCouponError(""); }}
-                        style={{ flex: 1, background: "transparent", border: "1px solid var(--border)", borderRight: "none", color: "var(--fg)", padding: "10px 14px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", outline: "none", letterSpacing: "1px" }}
-                      />
-                      <button onClick={applyCoupon} disabled={busy} className="coupon-btn"
-                        style={{ background: "var(--surface)", color: "var(--m1)", border: "1px solid var(--border)", padding: "10px 16px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", letterSpacing: "1px" }}>
-                        OK
-                      </button>
-                    </div>
-                    {appliedCode && <p style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", color: "var(--fg-soft)", marginTop: "8px", letterSpacing: "1px" }}>✓ Cupom {appliedCode} aplicado</p>}
-                    {couponError && <p role="alert" style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", color: "var(--danger)", marginTop: "8px", letterSpacing: "1px" }}>{couponError}</p>}
-                  </div>
-
-                  {/* Valores */}
-                  <div style={{ display: "flex", flexDirection: "column", gap: "14px", paddingBottom: "24px", borderBottom: "1px solid var(--border)", marginBottom: "24px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "12px" }}>
-                      <span style={{ color: "var(--m2)" }}>SUBTOTAL</span>
-                      <span>R$ {brl(subtotal)}</span>
-                    </div>
-                    {discount > 0 && (
-                      <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "12px" }}>
-                        <span style={{ color: "var(--m2)" }}>DESCONTO</span>
-                        <span>− R$ {brl(discount)}</span>
-                      </div>
-                    )}
-                    <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "12px" }}>
-                      <span style={{ color: "var(--m2)" }}>FRETE</span>
-                      <span>NO CHECKOUT</span>
-                    </div>
-                  </div>
-
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "28px" }}>
-                    <span style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "11px", letterSpacing: "2px", color: "var(--m2)" }}>TOTAL</span>
-                    <span style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "26px", color: "var(--fg)" }}>
-                      R$ {brl(total)}
-                    </span>
-                  </div>
-
-                  <a href={cart?.checkoutUrl || "#"} aria-disabled={!cart?.checkoutUrl} className="checkout-btn"
-                    style={{ display: "block", textAlign: "center", textDecoration: "none", width: "100%", background: "var(--fg)", color: "var(--bg)", padding: "16px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "11px", letterSpacing: "2px", marginBottom: "12px" }}>
-                    FINALIZAR COMPRA
-                  </a>
-                  <p style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "9px", color: "var(--m3)", textAlign: "center", letterSpacing: "1px" }}>
-                    PAGAMENTO NO CHECKOUT SEGURO DA SHOPIFY
-                  </p>
+              <div>
+                <div className="coupon">
+                  <input
+                    type="text"
+                    placeholder="Cupom de desconto"
+                    aria-label="Cupom de desconto"
+                    value={coupon}
+                    onChange={(e) => { setCoupon(e.target.value); setCouponError(""); }}
+                  />
+                  <button onClick={applyCoupon} disabled={busy}>Aplicar</button>
                 </div>
+                {appliedCode && <p className="note" style={{ marginTop: "8px" }}>Cupom {appliedCode} aplicado</p>}
+                {couponError && <p role="alert" className="err" style={{ marginTop: "8px" }}>{couponError}</p>}
               </div>
-            </div>
+
+              <div className="sum-row"><span>Subtotal</span><span>R$ {brl(subtotal)}</span></div>
+              {discount > 0 && <div className="sum-row"><span>Desconto</span><span>− R$ {brl(discount)}</span></div>}
+              <div className="sum-row"><span>Frete</span><span>Calculado no checkout</span></div>
+              <div className="sum-total"><span>Total</span><span>R$ {brl(total)}</span></div>
+
+              <a href={cart?.checkoutUrl || "#"} aria-disabled={!cart?.checkoutUrl} className="btn-pill">
+                Finalizar compra
+              </a>
+              <p className="note" style={{ textAlign: "center" }}>Pagamento no checkout seguro da Shopify</p>
+            </aside>
           )}
         </div>
       </div>
-    </>
+
+      <SiteFooter />
+    </div>
   );
 }

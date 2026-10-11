@@ -5,11 +5,11 @@ import { getProducts } from "@/lib/shopify";
 export default async function ProdutosPage({
   searchParams,
 }: {
-  searchParams: Promise<{ categoria?: string }>;
+  searchParams: Promise<{ categoria?: string; filtro?: string }>;
 }) {
-  const { categoria } = await searchParams;
+  const { categoria, filtro } = await searchParams;
   const products = await getProducts();
-  const categories = ["Todos", ...Array.from(new Set(products.map((p) => p.category)))];
+  const categories = Array.from(new Set(products.map((p) => p.category)));
   const initialCategory = categoria && categories.includes(categoria) ? categoria : "Todos";
 
   return (
@@ -17,6 +17,8 @@ export default async function ProdutosPage({
       products={products}
       categories={categories}
       initialCategory={initialCategory}
+      initialOffers={filtro === "ofertas"}
+      initialNews={filtro === "novidades"}
       cartSlot={<CartLink />}
     />
   );
