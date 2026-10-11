@@ -1,196 +1,194 @@
-"use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
 import type { Product } from "@/lib/types";
 import { storeConfig } from "@/lib/store-config";
 
 interface HomeClientProps {
   featured: Product[];
-  categories: string[];
+  categories: { name: string; image: string | null }[];
   cartSlot: React.ReactNode;
 }
 
-export default function HomeClient({ featured, categories, cartSlot }: HomeClientProps) {
-  const [scrolled, setScrolled] = useState(false);
-  const [hovered, setHovered] = useState<string | null>(null);
-  const spotlight = featured[0];
+const DISPLAY = "var(--font-display), 'Arial Narrow', Arial, sans-serif";
+const BODY = "var(--font-body), Helvetica, Arial, sans-serif";
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+function brl(value: number) {
+  return `R$ ${value.toFixed(2).replace(".", ",")}`;
+}
+
+export default function HomeClient({ featured, categories, cartSlot }: HomeClientProps) {
+  const spotlight = featured[0];
 
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        .nav-link { transition: color 0.2s; }
-        .nav-link:hover { color: var(--fg) !important; }
-        .card-hover { transition: transform 0.3s ease; }
-        .card-hover:hover { transform: translateY(-4px); }
-        .cat-link { transition: all 0.2s; }
-        .cat-link:hover { background: var(--fg) !important; color: var(--bg) !important; }
-        .btn-dark { transition: opacity 0.2s; }
-        .btn-dark:hover { opacity: 0.8; }
-        .btn-ghost { transition: all 0.2s; }
-        .btn-ghost:hover { background: var(--fg) !important; color: var(--bg) !important; }
-        .cta-btn { transition: all 0.2s; }
-        .cta-btn:hover { background: var(--fg) !important; color: var(--bg) !important; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-        .hero-text { animation: fadeUp 0.9s ease 0.1s forwards; opacity: 0; }
-        .hero-sub { animation: fadeUp 0.9s ease 0.3s forwards; opacity: 0; }
-        .hero-btns { animation: fadeUp 0.9s ease 0.5s forwards; opacity: 0; }
+        .home { background: var(--bg); color: var(--fg); font-family: ${BODY}; min-height: 100vh; }
+        .display { font-family: ${DISPLAY}; font-weight: 800; text-transform: uppercase; }
+        .pad { padding-left: 48px; padding-right: 48px; }
+        .nav-link { color: var(--fg); text-decoration: none; font-size: 15px; font-weight: 600; padding: 4px 0; border-bottom: 2px solid transparent; transition: border-color .15s; }
+        .nav-link:hover { border-bottom-color: var(--fg); }
+        .btn { display: inline-flex; align-items: center; gap: 12px; background: var(--fg); color: var(--bg); padding: 16px 28px; text-decoration: none; font-weight: 700; font-size: 14px; letter-spacing: .5px; text-transform: uppercase; border: 1px solid var(--fg); transition: background .15s, color .15s; }
+        .btn:hover { background: var(--bg); color: var(--fg); }
+        .btn-light { background: var(--bg); color: var(--fg); border-color: var(--bg); }
+        .btn-light:hover { background: transparent; color: var(--bg); }
+        .btn-outline { background: transparent; color: var(--fg); }
+        .btn-outline:hover { background: var(--fg); color: var(--bg); }
+        .hero { display: grid; grid-template-columns: 1fr 1fr; min-height: 78vh; background: var(--surface); }
+        .hero-text { display: flex; flex-direction: column; justify-content: flex-end; padding: 64px 48px; gap: 24px; }
+        .hero-title { font-size: clamp(64px, 9vw, 150px); line-height: .88; letter-spacing: -1px; }
+        .hero-media { position: relative; background: var(--surface-hover); min-height: 360px; overflow: hidden; }
+        .hero-tag { position: absolute; left: 24px; bottom: 24px; background: var(--bg); color: var(--fg); padding: 14px 18px; text-decoration: none; display: block; }
+        .section-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; }
+        .section-title { font-size: clamp(32px, 4vw, 52px); line-height: 1; letter-spacing: -.5px; }
+        .link-under { color: var(--fg); font-weight: 600; font-size: 14px; text-decoration: underline; text-underline-offset: 4px; }
+        .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .tile { position: relative; aspect-ratio: 4/5; background: var(--surface); overflow: hidden; display: flex; align-items: flex-end; text-decoration: none; color: var(--fg); }
+        .tile-label { position: relative; z-index: 1; margin: 16px; background: var(--bg); padding: 10px 16px; font-size: 22px; line-height: 1; display: flex; gap: 10px; align-items: center; }
+        .tile img { transition: transform .4s ease; }
+        .tile:hover img { transform: scale(1.04); }
+        .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .card { text-decoration: none; color: var(--fg); display: block; }
+        .card-img { position: relative; aspect-ratio: 1/1; background: var(--surface); overflow: hidden; }
+        .card-img img { transition: transform .4s ease; }
+        .card:hover .card-img img { transform: scale(1.04); }
+        .badge { position: absolute; top: 12px; left: 12px; background: var(--bg); color: var(--fg); font-size: 12px; font-weight: 700; padding: 4px 8px; text-transform: uppercase; z-index: 1; }
+        .band { background: var(--fg); color: var(--bg); display: flex; justify-content: space-between; align-items: center; gap: 32px; padding: 64px 48px; }
+        .footer { background: var(--fg); color: var(--bg); padding: 40px 48px 32px; border-top: 1px solid #2a2a2a; }
+        @media (max-width: 900px) {
+          .pad { padding-left: 20px; padding-right: 20px; }
+          .hero { grid-template-columns: 1fr; min-height: 0; }
+          .hero-text { padding: 40px 20px; }
+          .hero-media { min-height: 320px; order: -1; }
+          .tiles, .cards { grid-template-columns: repeat(2, 1fr); }
+          .nav-center { display: none !important; }
+          .band { flex-direction: column; align-items: flex-start; padding: 40px 20px; }
+          .footer { padding: 32px 20px; }
+        }
       `}</style>
 
-      <div style={{ background: "var(--bg)", minHeight: "100vh", fontFamily: "'Cormorant Garamond', serif", color: "var(--fg)" }}>
-
-        {/* Ticker */}
-        <div style={{ background: "var(--surface)", color: "var(--fg)", borderBottom: "1px solid var(--border)", textAlign: "center", padding: "9px", fontSize: "11px", fontFamily: "'DM Mono', monospace", letterSpacing: "2px" }}>
+      <div className="home">
+        {/* Barra de avisos */}
+        <div style={{ background: "var(--fg)", color: "var(--bg)", textAlign: "center", padding: "10px 16px", fontSize: "12px", fontWeight: 600, letterSpacing: "1px" }}>
           {storeConfig.ticker.join("  ·  ")}
         </div>
 
-        {/* Header */}
-        <header style={{
-          position: "sticky", top: 0, zIndex: 100,
-          background: scrolled ? "rgba(14,14,14,0.94)" : "var(--bg)",
-          backdropFilter: scrolled ? "blur(16px)" : "none",
-          borderBottom: "1px solid var(--border)",
-          padding: "0 60px",
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          height: "64px",
-          transition: "all 0.3s ease"
-        }}>
-          <nav style={{ display: "flex", gap: "36px" }}>
-            {[["Produtos", "/produtos"], ["Categorias", "#"], ["Ofertas", "#"]].map(([label, href]) => (
-              <Link key={label} href={href} className="nav-link"
-                style={{ color: "var(--m1)", textDecoration: "none", fontSize: "11px", letterSpacing: "2px", fontFamily: "'DM Mono', monospace" }}>
-                {label.toUpperCase()}
-              </Link>
-            ))}
+        {/* Cabeçalho */}
+        <header className="pad" style={{ position: "sticky", top: 0, zIndex: 100, background: "var(--bg)", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between", height: "68px" }}>
+          <Link href="/" className="display" style={{ fontSize: "32px", color: "var(--fg)", textDecoration: "none", letterSpacing: "0px" }}>
+            EcanBuy
+          </Link>
+          <nav className="nav-center" style={{ display: "flex", gap: "32px" }}>
+            <Link href="/produtos" className="nav-link">Produtos</Link>
+            <a href="#categorias" className="nav-link">Categorias</a>
+            <a href="#destaques" className="nav-link">Destaques</a>
           </nav>
-
-          <div style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", fontSize: "20px", fontWeight: "600", letterSpacing: "8px", color: "var(--fg)", fontFamily: "'Cormorant Garamond', serif" }}>
-            ECANBUY
-          </div>
-
           {cartSlot}
         </header>
 
         {/* Hero */}
-        <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: "88vh" }}>
-          <div style={{ padding: "80px 60px", display: "flex", flexDirection: "column", justifyContent: "center", borderRight: "1px solid var(--border)" }}>
-            <p className="hero-text" style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "4px", color: "var(--m2)", marginBottom: "28px" }}>
-              NOVA COLEÇÃO — 2026
-            </p>
-            <h1 className="hero-text" style={{ fontSize: "clamp(52px, 6vw, 88px)", fontWeight: "300", lineHeight: "0.95", letterSpacing: "-2px", marginBottom: "36px" }}>
-              A ARTE<br />
-              DE <em style={{ fontStyle: "italic" }}>vestir</em><br />
-              BEM.
+        <section className="hero">
+          <div className="hero-text">
+            <p style={{ fontSize: "13px", fontWeight: 700, letterSpacing: "1px" }}>NOVA COLEÇÃO 2026</p>
+            <h1 className="display hero-title">
+              Vista<br />o seu<br />ritmo.
             </h1>
-            <p className="hero-sub" style={{ color: "var(--m1)", fontSize: "17px", lineHeight: "1.75", maxWidth: "340px", marginBottom: "48px", fontWeight: "300" }}>
-              Produtos selecionados com qualidade premium. Design atemporal para quem valoriza cada detalhe.
+            <p style={{ maxWidth: "420px", fontSize: "17px", lineHeight: 1.5, color: "var(--m1)" }}>
+              Produtos selecionados, com visual limpo e envio calculado no checkout.
             </p>
-            <div className="hero-btns" style={{ display: "flex", gap: "12px" }}>
-              <Link href="/produtos" className="btn-dark"
-                style={{ background: "var(--fg)", color: "var(--bg)", padding: "14px 36px", textDecoration: "none", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "2px" }}>
-                EXPLORAR
-              </Link>
-              <Link href="/produtos" className="btn-ghost"
-                style={{ border: "1px solid var(--m4)", color: "var(--fg)", padding: "14px 36px", textDecoration: "none", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "2px" }}>
-                OFERTAS
-              </Link>
+            <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+              <Link href="/produtos" className="btn">Comprar agora <span aria-hidden>→</span></Link>
+              <a href="#destaques" className="btn btn-outline">Ver destaques</a>
             </div>
           </div>
-
-          <div style={{ background: "var(--surface)", position: "relative", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-            <div style={{ fontSize: "260px", opacity: 0.06, userSelect: "none", transform: "rotate(-12deg)", fontFamily: "'Cormorant Garamond', serif", color: "var(--fg)" }}>E</div>
+          <div className="hero-media">
+            {spotlight?.image ? (
+              <Image src={spotlight.image} alt={spotlight.name} fill priority sizes="(max-width: 900px) 100vw, 50vw" style={{ objectFit: "cover" }} />
+            ) : (
+              <div className="display" aria-hidden style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "clamp(160px, 24vw, 380px)", color: "var(--bg)", lineHeight: 1 }}>
+                EB
+              </div>
+            )}
             {spotlight && (
-              <Link href={`/produto/${spotlight.handle}`} style={{ position: "absolute", bottom: "48px", left: "48px", background: "var(--bg)", padding: "20px 28px", borderTop: "2px solid var(--fg)", textDecoration: "none", color: "inherit" }}>
-                <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "9px", letterSpacing: "3px", color: "var(--m2)", marginBottom: "6px" }}>EM DESTAQUE</p>
-                <p style={{ fontSize: "20px", fontWeight: "400" }}>{spotlight.name}</p>
-                <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "13px", color: "var(--m1)", marginTop: "6px" }}>R$ {spotlight.price.toFixed(2).replace(".", ",")}</p>
+              <Link href={`/produto/${spotlight.handle}`} className="hero-tag">
+                <p style={{ fontSize: "11px", fontWeight: 700, color: "var(--m2)", letterSpacing: "1px", marginBottom: "4px" }}>EM DESTAQUE</p>
+                <p className="display" style={{ fontSize: "24px", lineHeight: 1.05 }}>{spotlight.name}</p>
+                <p style={{ fontSize: "14px", fontWeight: 600, marginTop: "6px" }}>{brl(spotlight.price)}</p>
               </Link>
             )}
-            <div style={{ position: "absolute", top: "48px", right: "48px", fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "2px", color: "var(--m3)", writingMode: "vertical-rl" }}>
-              ECANBUY / 2026
-            </div>
           </div>
         </section>
 
         {/* Categorias */}
         {categories.length > 0 && (
-          <section style={{ borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)", display: "flex" }}>
-            {categories.map((cat, i) => (
-              <Link key={cat} href={`/produtos?categoria=${encodeURIComponent(cat)}`} className="cat-link"
-                style={{ flex: 1, padding: "22px", textAlign: "center", textDecoration: "none", color: "var(--m1)", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "2px", borderRight: i < categories.length - 1 ? "1px solid var(--border)" : "none" }}>
-                {cat.toUpperCase()}
-              </Link>
-            ))}
+          <section id="categorias" className="pad" style={{ paddingTop: "72px", paddingBottom: "24px" }}>
+            <div className="section-head">
+              <h2 className="display section-title">Compre por categoria</h2>
+            </div>
+            <div className="tiles">
+              {categories.map((cat) => (
+                <Link key={cat.name} href={`/produtos?categoria=${encodeURIComponent(cat.name)}`} className="tile">
+                  {cat.image && (
+                    <Image src={cat.image} alt={cat.name} fill sizes="(max-width: 900px) 50vw, 25vw" style={{ objectFit: "cover" }} />
+                  )}
+                  <span className="tile-label display">{cat.name} <span aria-hidden>→</span></span>
+                </Link>
+              ))}
+            </div>
           </section>
         )}
 
-        {/* Produtos */}
-        <section style={{ padding: "80px 60px", maxWidth: "1400px", margin: "0 auto" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "48px", borderBottom: "1px solid var(--border)", paddingBottom: "20px" }}>
-            <h2 style={{ fontSize: "38px", fontWeight: "300", letterSpacing: "-1px" }}>Em Destaque</h2>
-            <Link href="/produtos" style={{ fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "2px", color: "var(--m2)", textDecoration: "none" }}>
-              VER TODOS →
-            </Link>
+        {/* Destaques */}
+        <section id="destaques" className="pad" style={{ paddingTop: "56px", paddingBottom: "72px" }}>
+          <div className="section-head">
+            <h2 className="display section-title">Em destaque</h2>
+            <Link href="/produtos" className="link-under">Ver todos</Link>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1px", background: "var(--border)", border: "1px solid var(--border)" }}>
-            {featured.map(p => (
-              <Link key={p.id} href={`/produto/${p.handle}`} style={{ textDecoration: "none", color: "inherit" }}>
-                <div className="card-hover" style={{ background: "var(--bg)" }}
-                  onMouseEnter={() => setHovered(p.id)}
-                  onMouseLeave={() => setHovered(null)}>
-                  <div style={{ aspectRatio: "3/4", background: hovered === p.id ? "var(--surface-hover)" : "var(--surface)", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.3s", position: "relative" }}>
-                    {p.image ? (
-                      <Image src={p.image} alt={p.name} fill sizes="(max-width: 768px) 50vw, 25vw" style={{ objectFit: "cover" }} />
-                    ) : (
-                      <span style={{ fontSize: "80px", opacity: 0.1, fontFamily: "'Cormorant Garamond', serif" }}>◈</span>
-                    )}
+          <div className="cards">
+            {featured.map((p) => (
+              <Link key={p.id} href={`/produto/${p.handle}`} className="card">
+                <div className="card-img">
+                  {p.image ? (
+                    <Image src={p.image} alt={p.name} fill sizes="(max-width: 900px) 50vw, 25vw" style={{ objectFit: "cover" }} />
+                  ) : (
+                    <span className="display" aria-hidden style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "96px", color: "var(--border-strong)" }}>EB</span>
+                  )}
+                  {p.oldPrice ? <span className="badge">Oferta</span> : p.isNew ? <span className="badge">Novo</span> : null}
+                </div>
+                <div style={{ paddingTop: "14px" }}>
+                  <p style={{ fontSize: "15px", fontWeight: 700 }}>{p.name}</p>
+                  <p style={{ fontSize: "14px", color: "var(--m2)", marginTop: "2px" }}>{p.category}</p>
+                  <p style={{ fontSize: "15px", fontWeight: 600, marginTop: "10px" }}>
+                    {brl(p.price)}
                     {p.oldPrice && (
-                      <span style={{ position: "absolute", top: "16px", left: "16px", background: "var(--fg)", color: "var(--bg)", padding: "4px 10px", fontFamily: "'DM Mono', monospace", fontSize: "9px", letterSpacing: "1px" }}>
-                        OFERTA
-                      </span>
+                      <span style={{ marginLeft: "10px", color: "var(--m3)", textDecoration: "line-through", fontWeight: 400 }}>{brl(p.oldPrice)}</span>
                     )}
-                  </div>
-                  <div style={{ padding: "20px 20px 24px" }}>
-                    <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "9px", letterSpacing: "3px", color: "var(--m3)", marginBottom: "6px" }}>{p.category.toUpperCase()}</p>
-                    <p style={{ fontSize: "18px", fontWeight: "400", marginBottom: "10px" }}>{p.name}</p>
-                    <div style={{ display: "flex", gap: "10px", alignItems: "baseline" }}>
-                      <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "14px", color: "var(--fg)" }}>R$ {p.price.toFixed(2).replace(".", ",")}</span>
-                      {p.oldPrice && <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "12px", color: "var(--m4)", textDecoration: "line-through" }}>R$ {p.oldPrice.toFixed(2).replace(".", ",")}</span>}
-                    </div>
-                  </div>
+                  </p>
                 </div>
               </Link>
             ))}
           </div>
         </section>
 
-        {/* CTA */}
-        <section style={{ margin: "0 60px 80px", background: "var(--surface)", border: "1px solid var(--border)", color: "var(--fg)", padding: "72px 60px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div>
-            <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "4px", color: "var(--m3)", marginBottom: "16px" }}>EXCLUSIVO</p>
-            <h2 style={{ fontSize: "48px", fontWeight: "300", letterSpacing: "-1px", lineHeight: "1.1" }}>
-              Crie sua conta.<br />
-              <em style={{ fontStyle: "italic", color: "var(--m2)" }}>Ganhe 10% off.</em>
-            </h2>
-          </div>
-          <Link href="#" className="cta-btn"
-            style={{ border: "1px solid var(--border-strong)", color: "var(--fg)", padding: "16px 40px", textDecoration: "none", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "2px" }}>
-            CADASTRAR
-          </Link>
+        {/* Chamada */}
+        <section className="band">
+          <h2 className="display" style={{ fontSize: "clamp(36px, 5vw, 72px)", lineHeight: 0.95 }}>
+            Crie sua conta.<br />Ganhe 10% off.
+          </h2>
+          <Link href="#" className="btn btn-light">Cadastrar <span aria-hidden>→</span></Link>
         </section>
 
-        {/* Footer */}
-        <footer style={{ borderTop: "1px solid var(--border)", padding: "32px 60px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontSize: "16px", fontWeight: "600", letterSpacing: "6px" }}>ECANBUY</span>
-          <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "11px", color: "var(--m3)", letterSpacing: "1px" }}>© 2026 EcanBuy. Todos os direitos reservados.</p>
+        {/* Rodapé */}
+        <footer className="footer">
+          <div style={{ display: "flex", justifyContent: "space-between", gap: "32px", flexWrap: "wrap", marginBottom: "28px" }}>
+            <span className="display" style={{ fontSize: "32px" }}>EcanBuy</span>
+            <ul style={{ listStyle: "none", display: "grid", gap: "8px", fontSize: "13px", color: "#bdbdbf", maxWidth: "420px" }}>
+              {storeConfig.infoList.map((info) => (
+                <li key={info}>{info}</li>
+              ))}
+            </ul>
+          </div>
+          <p style={{ fontSize: "12px", color: "#8a8a8c" }}>© 2026 EcanBuy. Todos os direitos reservados.</p>
         </footer>
       </div>
     </>

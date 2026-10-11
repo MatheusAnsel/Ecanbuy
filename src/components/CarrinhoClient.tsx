@@ -43,7 +43,6 @@ export default function CarrinhoClient({ cart, configured }: CarrinhoClientProps
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Mono:wght@300;400;500&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         .remove-btn { cursor: pointer; border: none; background: transparent; transition: color 0.2s; }
         .remove-btn:hover { color: var(--fg) !important; }
@@ -56,13 +55,13 @@ export default function CarrinhoClient({ cart, configured }: CarrinhoClientProps
         .coupon-btn:hover { background: var(--fg) !important; color: var(--bg) !important; }
       `}</style>
 
-      <div style={{ background: "var(--bg)", minHeight: "100vh", fontFamily: "'Cormorant Garamond', serif", color: "var(--fg)" }}>
+      <div style={{ background: "var(--bg)", minHeight: "100vh", fontFamily: "var(--font-display), 'Arial Narrow', Arial, sans-serif", color: "var(--fg)" }}>
 
         {/* Header */}
         <header style={{ borderBottom: "1px solid var(--border)", padding: "0 60px", display: "flex", alignItems: "center", justifyContent: "space-between", height: "64px", background: "var(--bg)" }}>
-          <Link href="/" style={{ fontSize: "18px", fontWeight: "600", letterSpacing: "6px", color: "var(--fg)", textDecoration: "none" }}>ECANBUY</Link>
+          <Link href="/" style={{ fontSize: "30px", fontWeight: "800", letterSpacing: "0px", color: "var(--fg)", textDecoration: "none" }}>ECANBUY</Link>
           <Link href="/produtos" className="continue-link"
-            style={{ fontFamily: "'DM Mono', monospace", fontSize: "11px", color: "var(--m2)", textDecoration: "none", letterSpacing: "1px" }}>
+            style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "11px", color: "var(--m2)", textDecoration: "none", letterSpacing: "1px" }}>
             ← CONTINUAR COMPRANDO
           </Link>
         </header>
@@ -71,14 +70,14 @@ export default function CarrinhoClient({ cart, configured }: CarrinhoClientProps
 
           {/* Título */}
           <div style={{ marginBottom: "56px", borderBottom: "1px solid var(--border)", paddingBottom: "24px" }}>
-            <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "4px", color: "var(--m2)", marginBottom: "10px" }}>RESUMO</p>
-            <h1 style={{ fontSize: "56px", fontWeight: "300", letterSpacing: "-2px" }}>
+            <p style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", letterSpacing: "4px", color: "var(--m2)", marginBottom: "10px" }}>RESUMO</p>
+            <h1 style={{ fontSize: "56px", fontWeight: "800", letterSpacing: "-2px" }}>
               Carrinho {items.length > 0 && <span style={{ color: "var(--m4)", fontSize: "40px" }}>({cart?.totalQuantity ?? 0})</span>}
             </h1>
           </div>
 
           {!configured && (
-            <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", color: "var(--danger)", letterSpacing: "1px", marginBottom: "32px" }}>
+            <p style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", color: "var(--danger)", letterSpacing: "1px", marginBottom: "32px" }}>
               Modo demonstração: a loja ainda não está conectada à Shopify.
             </p>
           )}
@@ -86,9 +85,9 @@ export default function CarrinhoClient({ cart, configured }: CarrinhoClientProps
           {items.length === 0 ? (
             <div style={{ textAlign: "center", padding: "100px 0" }}>
               <p style={{ fontSize: "64px", opacity: 0.15, marginBottom: "32px" }}>◈</p>
-              <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "12px", color: "var(--m3)", letterSpacing: "2px", marginBottom: "36px" }}>SEU CARRINHO ESTÁ VAZIO</p>
+              <p style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "12px", color: "var(--m3)", letterSpacing: "2px", marginBottom: "36px" }}>SEU CARRINHO ESTÁ VAZIO</p>
               <Link href="/produtos"
-                style={{ background: "var(--fg)", color: "var(--bg)", padding: "14px 40px", textDecoration: "none", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "2px" }}>
+                style={{ background: "var(--fg)", color: "var(--bg)", padding: "14px 40px", textDecoration: "none", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "11px", letterSpacing: "2px" }}>
                 VER PRODUTOS
               </Link>
             </div>
@@ -98,7 +97,7 @@ export default function CarrinhoClient({ cart, configured }: CarrinhoClientProps
               {/* Itens */}
               <div>
                 {/* Cabeçalho da lista */}
-                <div style={{ display: "grid", gridTemplateColumns: "80px 1fr 120px 80px", gap: "20px", paddingBottom: "16px", borderBottom: "1px solid var(--border)", fontFamily: "'DM Mono', monospace", fontSize: "9px", letterSpacing: "2px", color: "var(--m3)" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "80px 1fr 120px 80px", gap: "20px", paddingBottom: "16px", borderBottom: "1px solid var(--border)", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "9px", letterSpacing: "2px", color: "var(--m3)" }}>
                   <span></span>
                   <span>PRODUTO</span>
                   <span style={{ textAlign: "center" }}>QTD.</span>
@@ -119,13 +118,13 @@ export default function CarrinhoClient({ cart, configured }: CarrinhoClientProps
 
                     {/* Info */}
                     <div>
-                      <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "9px", letterSpacing: "3px", color: "var(--m3)", marginBottom: "4px" }}>{item.category.toUpperCase()}</p>
+                      <p style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "9px", letterSpacing: "3px", color: "var(--m3)", marginBottom: "4px" }}>{item.category.toUpperCase()}</p>
                       <p style={{ fontSize: "19px", fontWeight: "400", marginBottom: "4px" }}>{item.name}</p>
                       {item.variantTitle !== "Default Title" && (
-                        <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", color: "var(--m3)", marginBottom: "12px" }}>OPÇÃO: {item.variantTitle}</p>
+                        <p style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", color: "var(--m3)", marginBottom: "12px" }}>OPÇÃO: {item.variantTitle}</p>
                       )}
                       <button onClick={() => removeItem(item.id)} disabled={busy} className="remove-btn"
-                        style={{ fontFamily: "'DM Mono', monospace", fontSize: "9px", color: "var(--m4)", letterSpacing: "1px", padding: 0, textDecoration: "underline", textUnderlineOffset: "3px" }}>
+                        style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "9px", color: "var(--m4)", letterSpacing: "1px", padding: 0, textDecoration: "underline", textUnderlineOffset: "3px" }}>
                         REMOVER
                       </button>
                     </div>
@@ -133,15 +132,15 @@ export default function CarrinhoClient({ cart, configured }: CarrinhoClientProps
                     {/* Qty */}
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid var(--border)" }}>
                       <button onClick={() => updateQty(item.id, item.quantity - 1)} disabled={busy} className="qty-btn"
-                        style={{ padding: "6px 12px", fontFamily: "'DM Mono', monospace", fontSize: "16px", color: "var(--m1)" }}>−</button>
-                      <span style={{ padding: "6px 12px", fontFamily: "'DM Mono', monospace", fontSize: "13px", borderLeft: "1px solid var(--border)", borderRight: "1px solid var(--border)" }}>{item.quantity}</span>
+                        style={{ padding: "6px 12px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "16px", color: "var(--m1)" }}>−</button>
+                      <span style={{ padding: "6px 12px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "13px", borderLeft: "1px solid var(--border)", borderRight: "1px solid var(--border)" }}>{item.quantity}</span>
                       <button onClick={() => updateQty(item.id, item.quantity + 1)} disabled={busy} className="qty-btn"
-                        style={{ padding: "6px 12px", fontFamily: "'DM Mono', monospace", fontSize: "16px", color: "var(--m1)" }}>+</button>
+                        style={{ padding: "6px 12px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "16px", color: "var(--m1)" }}>+</button>
                     </div>
 
                     {/* Preço */}
                     <div style={{ textAlign: "right" }}>
-                      <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "15px", color: "var(--fg)" }}>
+                      <span style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "15px", color: "var(--fg)" }}>
                         R$ {brl(item.total)}
                       </span>
                     </div>
@@ -152,7 +151,7 @@ export default function CarrinhoClient({ cart, configured }: CarrinhoClientProps
               {/* Resumo */}
               <div style={{ position: "sticky", top: "80px" }}>
                 <div style={{ border: "1px solid var(--border)", padding: "36px" }}>
-                  <h2 style={{ fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "3px", color: "var(--m2)", marginBottom: "28px" }}>RESUMO DO PEDIDO</h2>
+                  <h2 style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "11px", letterSpacing: "3px", color: "var(--m2)", marginBottom: "28px" }}>RESUMO DO PEDIDO</h2>
 
                   {/* Cupom */}
                   <div style={{ marginBottom: "28px" }}>
@@ -160,47 +159,47 @@ export default function CarrinhoClient({ cart, configured }: CarrinhoClientProps
                       <input type="text" placeholder="CUPOM DE DESCONTO"
                         value={coupon}
                         onChange={e => { setCoupon(e.target.value); setCouponError(""); }}
-                        style={{ flex: 1, background: "transparent", border: "1px solid var(--border)", borderRight: "none", color: "var(--fg)", padding: "10px 14px", fontFamily: "'DM Mono', monospace", fontSize: "10px", outline: "none", letterSpacing: "1px" }}
+                        style={{ flex: 1, background: "transparent", border: "1px solid var(--border)", borderRight: "none", color: "var(--fg)", padding: "10px 14px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", outline: "none", letterSpacing: "1px" }}
                       />
                       <button onClick={applyCoupon} disabled={busy} className="coupon-btn"
-                        style={{ background: "var(--surface)", color: "var(--m1)", border: "1px solid var(--border)", padding: "10px 16px", fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "1px" }}>
+                        style={{ background: "var(--surface)", color: "var(--m1)", border: "1px solid var(--border)", padding: "10px 16px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", letterSpacing: "1px" }}>
                         OK
                       </button>
                     </div>
-                    {appliedCode && <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", color: "var(--fg-soft)", marginTop: "8px", letterSpacing: "1px" }}>✓ Cupom {appliedCode} aplicado</p>}
-                    {couponError && <p role="alert" style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", color: "var(--danger)", marginTop: "8px", letterSpacing: "1px" }}>{couponError}</p>}
+                    {appliedCode && <p style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", color: "var(--fg-soft)", marginTop: "8px", letterSpacing: "1px" }}>✓ Cupom {appliedCode} aplicado</p>}
+                    {couponError && <p role="alert" style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", color: "var(--danger)", marginTop: "8px", letterSpacing: "1px" }}>{couponError}</p>}
                   </div>
 
                   {/* Valores */}
                   <div style={{ display: "flex", flexDirection: "column", gap: "14px", paddingBottom: "24px", borderBottom: "1px solid var(--border)", marginBottom: "24px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "'DM Mono', monospace", fontSize: "12px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "12px" }}>
                       <span style={{ color: "var(--m2)" }}>SUBTOTAL</span>
                       <span>R$ {brl(subtotal)}</span>
                     </div>
                     {discount > 0 && (
-                      <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "'DM Mono', monospace", fontSize: "12px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "12px" }}>
                         <span style={{ color: "var(--m2)" }}>DESCONTO</span>
                         <span>− R$ {brl(discount)}</span>
                       </div>
                     )}
-                    <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "'DM Mono', monospace", fontSize: "12px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "12px" }}>
                       <span style={{ color: "var(--m2)" }}>FRETE</span>
                       <span>NO CHECKOUT</span>
                     </div>
                   </div>
 
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "28px" }}>
-                    <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "2px", color: "var(--m2)" }}>TOTAL</span>
-                    <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "26px", color: "var(--fg)" }}>
+                    <span style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "11px", letterSpacing: "2px", color: "var(--m2)" }}>TOTAL</span>
+                    <span style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "26px", color: "var(--fg)" }}>
                       R$ {brl(total)}
                     </span>
                   </div>
 
                   <a href={cart?.checkoutUrl || "#"} aria-disabled={!cart?.checkoutUrl} className="checkout-btn"
-                    style={{ display: "block", textAlign: "center", textDecoration: "none", width: "100%", background: "var(--fg)", color: "var(--bg)", padding: "16px", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "2px", marginBottom: "12px" }}>
+                    style={{ display: "block", textAlign: "center", textDecoration: "none", width: "100%", background: "var(--fg)", color: "var(--bg)", padding: "16px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "11px", letterSpacing: "2px", marginBottom: "12px" }}>
                     FINALIZAR COMPRA
                   </a>
-                  <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "9px", color: "var(--m3)", textAlign: "center", letterSpacing: "1px" }}>
+                  <p style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "9px", color: "var(--m3)", textAlign: "center", letterSpacing: "1px" }}>
                     PAGAMENTO NO CHECKOUT SEGURO DA SHOPIFY
                   </p>
                 </div>

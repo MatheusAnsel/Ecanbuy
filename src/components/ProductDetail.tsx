@@ -55,7 +55,6 @@ export default function ProductDetail({ product, cartSlot }: ProductDetailProps)
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Mono:wght@300;400;500&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         .size-btn { cursor: pointer; border: none; transition: all 0.15s; }
         .qty-btn { cursor: pointer; border: none; background: transparent; transition: opacity 0.2s; }
@@ -67,16 +66,16 @@ export default function ProductDetail({ product, cartSlot }: ProductDetailProps)
         .breadcrumb-link:hover { color: var(--fg) !important; }
       `}</style>
 
-      <div style={{ background: "var(--bg)", minHeight: "100vh", fontFamily: "'Cormorant Garamond', serif", color: "var(--fg)" }}>
+      <div style={{ background: "var(--bg)", minHeight: "100vh", fontFamily: "var(--font-display), 'Arial Narrow', Arial, sans-serif", color: "var(--fg)" }}>
 
         {/* Header */}
         <header style={{ borderBottom: "1px solid var(--border)", padding: "0 60px", display: "flex", alignItems: "center", justifyContent: "space-between", height: "64px", background: "var(--bg)" }}>
-          <Link href="/" style={{ fontSize: "18px", fontWeight: "600", letterSpacing: "6px", color: "var(--fg)", textDecoration: "none" }}>ECANBUY</Link>
+          <Link href="/" style={{ fontSize: "30px", fontWeight: "800", letterSpacing: "0px", color: "var(--fg)", textDecoration: "none" }}>ECANBUY</Link>
           {cartSlot}
         </header>
 
         {/* Breadcrumb */}
-        <div style={{ padding: "16px 60px", borderBottom: "1px solid var(--border)", display: "flex", gap: "8px", fontFamily: "'DM Mono', monospace", fontSize: "10px", color: "var(--m3)", letterSpacing: "1px" }}>
+        <div style={{ padding: "16px 60px", borderBottom: "1px solid var(--border)", display: "flex", gap: "8px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", color: "var(--m3)", letterSpacing: "1px" }}>
           <Link href="/" className="breadcrumb-link" style={{ color: "var(--m3)", textDecoration: "none" }}>HOME</Link>
           <span>/</span>
           <Link href="/produtos" className="breadcrumb-link" style={{ color: "var(--m3)", textDecoration: "none" }}>PRODUTOS</Link>
@@ -91,36 +90,36 @@ export default function ProductDetail({ product, cartSlot }: ProductDetailProps)
             {product.image ? (
               <Image src={product.image} alt={product.name} fill priority sizes="50vw" style={{ objectFit: "cover" }} />
             ) : (
-              <span style={{ fontSize: "180px", opacity: 0.08, fontFamily: "'Cormorant Garamond', serif" }}>◈</span>
+              <span style={{ fontSize: "180px", opacity: 0.08, fontFamily: "var(--font-display), 'Arial Narrow', Arial, sans-serif" }}>◈</span>
             )}
             {discount && (
-              <div style={{ position: "absolute", top: "40px", left: "40px", background: "var(--fg)", color: "var(--bg)", padding: "8px 16px", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "1px" }}>
+              <div style={{ position: "absolute", top: "40px", left: "40px", background: "var(--fg)", color: "var(--bg)", padding: "8px 16px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "11px", letterSpacing: "1px" }}>
                 −{discount}%
               </div>
             )}
-            <div style={{ position: "absolute", bottom: "40px", right: "40px", fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "2px", color: "var(--m3)", writingMode: "vertical-rl" }}>
+            <div style={{ position: "absolute", bottom: "40px", right: "40px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", letterSpacing: "2px", color: "var(--m3)", writingMode: "vertical-rl" }}>
               {product.category.toUpperCase()}
             </div>
           </div>
 
           {/* Detalhes */}
           <div style={{ padding: "60px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "4px", color: "var(--m2)", marginBottom: "12px" }}>{product.category.toUpperCase()}</p>
-            <h1 style={{ fontSize: "44px", fontWeight: "300", letterSpacing: "-1px", lineHeight: "1.1", marginBottom: "28px" }}>{product.name}</h1>
+            <p style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", letterSpacing: "4px", color: "var(--m2)", marginBottom: "12px" }}>{product.category.toUpperCase()}</p>
+            <h1 style={{ fontSize: "44px", fontWeight: "800", letterSpacing: "-1px", lineHeight: "1.1", marginBottom: "28px" }}>{product.name}</h1>
 
             {/* Preço */}
             <div style={{ display: "flex", alignItems: "baseline", gap: "16px", marginBottom: "36px", paddingBottom: "36px", borderBottom: "1px solid var(--border)" }}>
-              <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "28px", color: "var(--fg)" }}>
+              <span style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "28px", color: "var(--fg)" }}>
                 R$ {product.price.toFixed(2).replace(".", ",")}
               </span>
               {product.oldPrice && (
-                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "18px", color: "var(--m4)", textDecoration: "line-through" }}>
+                <span style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "18px", color: "var(--m4)", textDecoration: "line-through" }}>
                   R$ {product.oldPrice.toFixed(2).replace(".", ",")}
                 </span>
               )}
             </div>
 
-            <p style={{ color: "var(--m1)", fontSize: "16px", lineHeight: "1.75", marginBottom: "36px", fontWeight: "300" }}>
+            <p style={{ color: "var(--m1)", fontSize: "16px", lineHeight: "1.7", marginBottom: "36px", fontWeight: "400", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif" }}>
               {product.description}
             </p>
 
@@ -129,7 +128,7 @@ export default function ProductDetail({ product, cartSlot }: ProductDetailProps)
             {/* Opções (tamanho, cor...) */}
             {product.hasOptions && (
               <div style={{ marginBottom: "32px" }}>
-                <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "2px", color: "var(--m2)", marginBottom: "14px" }}>OPÇÃO</p>
+                <p style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", letterSpacing: "2px", color: "var(--m2)", marginBottom: "14px" }}>OPÇÃO</p>
                 <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                   {product.variants.map(v => (
                     <button key={v.id} onClick={() => setSelectedVariant(v.id)} className="size-btn" disabled={!v.available}
@@ -138,7 +137,7 @@ export default function ProductDetail({ product, cartSlot }: ProductDetailProps)
                         color: selectedVariant === v.id ? "var(--bg)" : "var(--m1)",
                         border: `1px solid ${selectedVariant === v.id ? "var(--fg)" : "var(--border)"}`,
                         padding: "10px 18px",
-                        fontFamily: "'DM Mono', monospace", fontSize: "12px",
+                        fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "12px",
                         opacity: v.available ? 1 : 0.35,
                         cursor: v.available ? "pointer" : "not-allowed",
                         textDecoration: v.available ? "none" : "line-through",
@@ -152,35 +151,35 @@ export default function ProductDetail({ product, cartSlot }: ProductDetailProps)
 
             {/* Quantidade */}
             <div style={{ marginBottom: "32px" }}>
-              <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "2px", color: "var(--m2)", marginBottom: "14px" }}>QUANTIDADE</p>
+              <p style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", letterSpacing: "2px", color: "var(--m2)", marginBottom: "14px" }}>QUANTIDADE</p>
               <div style={{ display: "inline-flex", alignItems: "center", border: "1px solid var(--border)" }}>
                 <button onClick={() => setQty(q => Math.max(1, q - 1))} className="qty-btn"
-                  style={{ padding: "10px 20px", fontFamily: "'DM Mono', monospace", fontSize: "18px", color: "var(--m1)" }}>−</button>
-                <span style={{ padding: "10px 24px", fontFamily: "'DM Mono', monospace", fontSize: "14px", borderLeft: "1px solid var(--border)", borderRight: "1px solid var(--border)" }}>{qty}</span>
+                  style={{ padding: "10px 20px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "18px", color: "var(--m1)" }}>−</button>
+                <span style={{ padding: "10px 24px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "14px", borderLeft: "1px solid var(--border)", borderRight: "1px solid var(--border)" }}>{qty}</span>
                 <button onClick={() => setQty(q => q + 1)} className="qty-btn"
-                  style={{ padding: "10px 20px", fontFamily: "'DM Mono', monospace", fontSize: "18px", color: "var(--m1)" }}>+</button>
+                  style={{ padding: "10px 20px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "18px", color: "var(--m1)" }}>+</button>
               </div>
             </div>
 
             {/* Botões */}
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
               <button onClick={handleAdd} className="btn-add" disabled={loading || soldOut}
-                style={{ background: added ? "var(--badge)" : "var(--fg)", color: "var(--bg)", padding: "16px", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "2px", opacity: loading || soldOut ? 0.6 : 1 }}>
+                style={{ background: added ? "var(--badge)" : "var(--fg)", color: "var(--bg)", padding: "16px", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "11px", letterSpacing: "2px", opacity: loading || soldOut ? 0.6 : 1 }}>
                 {soldOut ? "ESGOTADO" : loading ? "ADICIONANDO..." : added ? "✓  ADICIONADO" : "ADICIONAR AO CARRINHO"}
               </button>
               <button onClick={handleBuyNow} className="btn-outline" disabled={loading || soldOut}
-                style={{ border: "1px solid var(--border)", background: "transparent", cursor: "pointer", color: "var(--fg)", padding: "16px", textAlign: "center", fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "2px" }}>
+                style={{ border: "1px solid var(--border)", background: "transparent", cursor: "pointer", color: "var(--fg)", padding: "16px", textAlign: "center", fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "11px", letterSpacing: "2px" }}>
                 COMPRAR AGORA
               </button>
               {error && (
-                <p role="alert" style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", color: "var(--danger)", letterSpacing: "1px" }}>{error}</p>
+                <p role="alert" style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", color: "var(--danger)", letterSpacing: "1px" }}>{error}</p>
               )}
             </div>
 
             {/* Info */}
             <div style={{ marginTop: "36px", paddingTop: "24px", borderTop: "1px solid var(--border)", display: "flex", flexDirection: "column", gap: "8px" }}>
               {storeConfig.infoList.map(info => (
-                <p key={info} style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", color: "var(--m3)", letterSpacing: "1px" }}>— {info}</p>
+                <p key={info} style={{ fontFamily: "var(--font-body), Helvetica, Arial, sans-serif", fontSize: "10px", color: "var(--m3)", letterSpacing: "1px" }}>— {info}</p>
               ))}
             </div>
           </div>
