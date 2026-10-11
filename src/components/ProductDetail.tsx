@@ -59,7 +59,7 @@ export default function ProductDetail({ product, cartSlot }: ProductDetailProps)
     <div className="page">
       <SiteHeader cartSlot={cartSlot} />
 
-      <div className="wrap">
+      <main id="conteudo" className="wrap">
         <nav className="crumbs pad" aria-label="Você está em">
           <Link href="/">Início</Link>
           <span>/</span>
@@ -138,7 +138,7 @@ export default function ProductDetail({ product, cartSlot }: ProductDetailProps)
             </div>
           </div>
         </div>
-      </div>
+      </main>
 
       <SiteFooter />
     </div>

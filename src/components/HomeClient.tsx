@@ -24,6 +24,7 @@ export default function HomeClient({ products, categories, allCategories, cartSl
     <div className="page">
       <SiteHeader cartSlot={cartSlot} categories={allCategories} />
 
+      <main id="conteudo">
       {/* Hero em tela cheia */}
       <section className="hero">
         {spotlight?.image ? (
@@ -110,6 +111,8 @@ export default function HomeClient({ products, categories, allCategories, cartSl
         </h2>
         <Link href="#" className="btn">Cadastrar <span aria-hidden>→</span></Link>
       </section>
+
+      </main>
 
       <SiteFooter categories={allCategories} />
     </div>

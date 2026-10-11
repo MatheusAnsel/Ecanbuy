@@ -41,7 +41,7 @@ export default function ProdutosClient({
     <div className="page">
       <SiteHeader cartSlot={cartSlot} categories={categories} />
 
-      <div className="wrap">
+      <main id="conteudo" className="wrap">
         <div className="list-head pad">
           <h1 className="display list-title">
             {activeCategory === "Todos" ? "Todos os produtos" : activeCategory} <span>({filtered.length})</span>
@@ -92,7 +92,7 @@ export default function ProdutosClient({
             )}
           </section>
         </div>
-      </div>
+      </main>
 
       <SiteFooter categories={categories} />
     </div>

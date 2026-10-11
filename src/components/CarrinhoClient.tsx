@@ -46,7 +46,7 @@ export default function CarrinhoClient({ cart, configured }: CarrinhoClientProps
     <div className="page">
       <SiteHeader cartSlot={<span />} />
 
-      <div className="wrap">
+      <main id="conteudo" className="wrap">
         <div className="bag pad">
           <section>
             <h1 className="display bag-title">
@@ -126,7 +126,7 @@ export default function CarrinhoClient({ cart, configured }: CarrinhoClientProps
             </aside>
           )}
         </div>
-      </div>
+      </main>
 
       <SiteFooter />
     </div>
