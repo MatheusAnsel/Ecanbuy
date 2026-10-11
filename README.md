@@ -2,7 +2,7 @@
 
 # EcanBuy
 
-**Loja de dropshipping headless** construída com Next.js (App Router) e Shopify Storefront API, com tema escuro e carrinho, cupom e checkout integrados à Shopify.
+**Loja de dropshipping headless** construída com Next.js (App Router) e Shopify Storefront API, com tema claro e carrinho, cupom e checkout integrados à Shopify.
 
 [![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=next.js&logoColor=white)](#)
 [![React](https://img.shields.io/badge/React_19-61DAFB?style=flat-square&logo=react&logoColor=black)](#)
@@ -52,14 +52,14 @@ sequenceDiagram
     Note over A,N: Erro interno vira uma mensagem genérica para o cliente, e o detalhe vai só para o log
 ```
 
-Sem as variáveis de ambiente da Shopify, o projeto roda em modo demonstração com um catálogo local, útil para desenvolver a interface.
+Sem as variáveis de ambiente da Shopify, o projeto roda em modo demonstração com um catálogo local (com ilustrações em `public/mock`), útil para desenvolver a interface. Ao configurar `SHOPIFY_STORE_DOMAIN` e `SHOPIFY_STOREFRONT_TOKEN`, os produtos, preços, categorias (tipo de produto) e fotos passam a vir da Shopify automaticamente.
 
 ## Tecnologias
 
 - **Framework:** Next.js 16 (App Router, Server Components e Server Actions)
 - **Linguagem:** TypeScript
 - **UI:** React 19
-- **Estilização:** Tailwind CSS 4, estilos inline e variáveis CSS (tema escuro em `src/app/globals.css`)
+- **Estilização:** Tailwind CSS 4 e variáveis CSS (tema claro em `src/app/globals.css`)
 - **E-commerce:** Shopify Storefront API (GraphQL)
 - **Importação e fulfillment:** DropshipBot (app da Shopify)
 - **Package manager:** npm
@@ -72,7 +72,7 @@ Sem as variáveis de ambiente da Shopify, o projeto roda em modo demonstração 
 - [x] **Cupons de desconto** validados pela Shopify
 - [x] **Checkout** hospedado pela Shopify
 - [x] **Modo demonstração** com catálogo local quando a Shopify não está configurada
-- [x] **Tema escuro** em todo o site, controlado por variáveis CSS
+- [x] **Tema claro** inspirado em lojas esportivas, controlado por variáveis CSS
 - [x] **Segurança:** validação das entradas das Server Actions, erros genéricos para o cliente, headers de segurança e dependências sem vulnerabilidades conhecidas (`npm audit`)
 - [x] **Interface responsiva**
 

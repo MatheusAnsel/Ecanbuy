@@ -18,7 +18,7 @@ function mk(
     oldPrice,
     category,
     description,
-    image: null,
+    image: `/mock/${handle}.webp`,
     isNew,
     hasOptions: sizes.length > 1,
     variants: sizes.map((s) => ({ id: `mock:${handle}:${s}`, title: s, available: true })),
@@ -26,6 +26,8 @@ function mk(
 }
 
 // Catálogo de demonstração, usado apenas quando a Shopify não está configurada.
+// As imagens (public/mock) são ilustrações próprias; com a Shopify configurada,
+// as fotos reais dos produtos vêm da API (featuredImage) e estas não são usadas.
 export const mockProducts: Product[] = [
   mk("tenis-urban-pro", "Tênis Urban Pro", 299.9, 399.9, "Calçados", false, "Design urbano com conforto extremo. Solado de borracha antiderrapante e palmilha anatômica.", ["38", "39", "40", "41", "42", "43"]),
   mk("mochila-slim-carbon", "Mochila Slim Carbon", 189.9, null, "Acessórios", true, "Mochila minimalista com compartimento acolchoado para notebook e alças ergonômicas.", ["Único"]),
