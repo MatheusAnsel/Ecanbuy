@@ -73,6 +73,9 @@ Sem as variáveis de ambiente da Shopify, o projeto roda em modo demonstração 
 - [x] **Checkout** hospedado pela Shopify
 - [x] **Modo demonstração** com catálogo local quando a Shopify não está configurada
 - [x] **Tema claro** inspirado em lojas esportivas, controlado por variáveis CSS
+- [x] **Barra de utilidades** no topo (acessibilidade, acompanhar pedido, ajuda e conta) e menu com ofertas e lançamentos
+- [x] **Página de ajuda** (`/ajuda`) com envio, pagamento, trocas, acompanhamento de pedido e acessibilidade
+- [x] **Imagens de exemplo** para produtos sem foto, substituídas pela foto da Shopify quando ela existir
 - [x] **Segurança:** validação das entradas das Server Actions, erros genéricos para o cliente, headers de segurança e dependências sem vulnerabilidades conhecidas (`npm audit`)
 - [x] **Interface responsiva**
 
@@ -104,7 +107,7 @@ A versão da API pode ser trocada com `SHOPIFY_API_VERSION` (padrão em `src/lib
 ## Testes e CI
 
 ```bash
-npm test                # 84 testes (Vitest)
+npm test                # 95 testes (Vitest)
 npm run test:coverage   # com cobertura e piso mínimo
 npm run lint
 npm run typecheck
@@ -115,13 +118,15 @@ Os testes cobrem a lógica de negócio sem acessar a Shopify de verdade (a `fetc
 - **Cliente da Shopify** (`src/lib/shopify.ts`): endpoint, token e versão da API; cache do catálogo (60 s) e carrinho sem cache; mapeamento de produtos (preço promocional só quando o preço de comparação é maior, opções de variante, produto novo nos últimos 30 dias, categoria padrão); mapeamento do carrinho; recusa de `checkoutUrl` que não seja `https`; e transformação de `userErrors` da Shopify em erro.
 - **Server Actions** (`src/app/actions.ts`): validação do formato dos ids da Shopify, quantidade de 1 a 99, regras do cupom, cupom recusado removido do carrinho, cookie `httpOnly` e `secure` só em produção, carrinho expirado recriado, e erros internos que não vazam para o cliente.
 - **Sessão do carrinho** (`src/lib/cart-session.ts`): leitura do cookie e falha da Shopify sem quebrar a página.
+- **Imagens de exemplo** (`src/lib/fallback-images.ts`): escolha da imagem pelo nome ou categoria do produto, com a primeira regra que combinar vencendo, e escolha estável pelo handle quando não há pista.
 - **Modo demonstração**: sem as variáveis da Shopify, nenhuma requisição é feita.
 
 | Cobertura (out/2026) | Medido | Mínimo exigido no CI |
 | --- | --- | --- |
-| Linhas e instruções | 100% | 95% |
-| Branches | 100% | 90% |
-| Funções | 100% | 95% |
+| Linhas | 98,5% | 95% |
+| Instruções | 98,7% | 95% |
+| Branches | 98,2% | 90% |
+| Funções | 97,5% | 95% |
 
 A métrica considera `src/lib` e `src/app/actions.ts`, onde está a lógica. As páginas e os componentes são apresentação sobre essa lógica e ficam de fora, assim como `types.ts` e `store-config.ts` (só interfaces e textos). Se a cobertura cair abaixo do mínimo, o CI falha.
 
@@ -136,11 +141,14 @@ src/
  │    ├── produtos/             # Listagem
  │    ├── produto/[handle]/     # Detalhe do produto
  │    ├── carrinho/             # Carrinho
+ │    ├── ajuda/                # Envio, pagamento, trocas, pedido e acessibilidade
  │    └── actions.ts            # Server Actions do carrinho
  ├── components/                # Componentes de interface
  └── lib/
       ├── shopify.ts            # Cliente da Storefront API (com testes)
       ├── cart-session.ts       # Leitura do carrinho pelo cookie
+      ├── fallback-images.ts    # Imagem de exemplo para produto sem foto (com testes)
+      ├── shop-links.ts         # Links da conta do cliente hospedada na Shopify
       ├── mock-products.ts      # Catálogo do modo demonstração
       └── store-config.ts       # Textos de política da loja
 ```
