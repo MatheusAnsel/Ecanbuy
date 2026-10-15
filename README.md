@@ -16,6 +16,17 @@
 
 ---
 
+## Telas
+
+| | |
+|---|---|
+| ![Página inicial com banner e chamada para a coleção](docs/screenshots/home.png) | ![Catálogo com filtros por categoria e ordenação](docs/screenshots/catalogo.png) |
+| Página inicial | Catálogo com categorias, filtros e ordenação |
+| ![Página de produto com seleção de tamanho, quantidade e preço promocional](docs/screenshots/produto.png) | |
+| Página de produto: opções, quantidade e preço promocional | |
+
+As capturas foram feitas em modo demonstração (sem Shopify conectada), com os produtos de exemplo de `src/lib/mock-products.ts`.
+
 ## Sobre o projeto
 
 O EcanBuy é uma loja online de dropshipping. O front end é feito em Next.js e conversa com a Shopify pela Storefront API (modelo headless): catálogo, carrinho, cupons e checkout vêm da Shopify, e os produtos são importados de fornecedores pelo app DropshipBot, que também sincroniza e cumpre os pedidos.
