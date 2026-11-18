@@ -1,8 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const cookieStore = vi.hoisted(() => ({ set: vi.fn() }));
+const cookieStore = vi.hoisted(() => ({ set: vi.fn(), delete: vi.fn() }));
 const revalidar = vi.hoisted(() => vi.fn());
-const sessao = vi.hoisted(() => ({ CART_COOKIE: "ecanbuy_cart", getCartId: vi.fn() }));
+const sessao = vi.hoisted(() => ({ CART_COOKIE: "ecanbuy_cart", getCartId: vi.fn(), getDemoState: vi.fn() }));
+// redirect() do Next lança uma exceção; aqui ela carrega o destino para os testes conferirem.
+const redirecionar = vi.hoisted(() => vi.fn((url: string) => { throw new Error(`REDIRECT:${url}`); }));
 // isShopifyConfigured é um valor, não função: o objeto é mutável para alternar entre os cenários.
 const shop = vi.hoisted(() => ({
   isShopifyConfigured: true,
@@ -16,10 +18,11 @@ const shop = vi.hoisted(() => ({
 
 vi.mock("next/headers", () => ({ cookies: async () => cookieStore }));
 vi.mock("next/cache", () => ({ revalidatePath: revalidar }));
+vi.mock("next/navigation", () => ({ redirect: redirecionar }));
 vi.mock("@/lib/cart-session", () => sessao);
 vi.mock("@/lib/shopify", () => shop);
 
-import { addToCartAction, applyDiscountAction, removeLineAction, updateLineAction } from "./actions";
+import { addToCartAction, applyDiscountAction, finishDemoOrderAction, removeLineAction, updateLineAction } from "./actions";
 
 const VARIANTE = "gid://shopify/ProductVariant/44556677";
 const LINHA = "gid://shopify/CartLine/a1b2-c3?cart=xyz";
@@ -37,17 +40,73 @@ afterEach(() => {
 });
 
 describe("modo demonstração", () => {
-  it("todas as ações recusam com a mensagem de demonstração e não chamam a Shopify", async () => {
+  const TENIS = "mock:tenis-urban-pro:40";
+
+  beforeEach(() => {
     shop.isShopifyConfigured = false;
-    const esperado = { ok: false, error: "A loja ainda não está conectada à Shopify (modo demonstração)." };
+    sessao.getDemoState.mockResolvedValue({ lines: [] });
+  });
 
-    expect(await addToCartAction(VARIANTE, 1)).toEqual(esperado);
-    expect(await updateLineAction(LINHA, 2)).toEqual(esperado);
-    expect(await removeLineAction(LINHA)).toEqual(esperado);
-    expect(await applyDiscountAction("PROMO10")).toEqual(esperado);
+  const salvo = () => JSON.parse(cookieStore.set.mock.calls.at(-1)![1]);
 
+  it("adiciona ao carrinho de demonstração num cookie seguro, sem chamar a Shopify", async () => {
+    expect(await addToCartAction(TENIS, 2)).toEqual({ ok: true });
+    expect(cookieStore.set).toHaveBeenCalledWith(
+      "ecanbuy_demo_cart",
+      expect.any(String),
+      expect.objectContaining({ httpOnly: true, sameSite: "lax", path: "/" }),
+    );
+    expect(salvo()).toEqual({ lines: [{ v: TENIS, q: 2 }] });
     expect(shop.createCart).not.toHaveBeenCalled();
+    expect(revalidar).toHaveBeenCalled();
+  });
+
+  it("recusa ids da Shopify, itens inexistentes e quantidades inválidas", async () => {
+    expect(await addToCartAction(VARIANTE, 1)).toEqual({ ok: false, error: "Item inválido." });
+    expect(await addToCartAction("mock:nao-existe:1", 1)).toEqual({ ok: false, error: "Item inválido." });
+    expect(await addToCartAction(TENIS, 0)).toEqual({ ok: false, error: "Quantidade inválida." });
+    expect(await addToCartAction(TENIS, 1.5)).toEqual({ ok: false, error: "Quantidade inválida." });
     expect(cookieStore.set).not.toHaveBeenCalled();
+  });
+
+  it("atualiza e remove itens; carrinho vazio apaga o cookie", async () => {
+    sessao.getDemoState.mockResolvedValue({ lines: [{ v: TENIS, q: 1 }] });
+    expect(await updateLineAction(TENIS, 3)).toEqual({ ok: true });
+    expect(salvo()).toEqual({ lines: [{ v: TENIS, q: 3 }] });
+
+    expect(await removeLineAction(TENIS)).toEqual({ ok: true });
+    expect(cookieStore.delete).toHaveBeenCalledWith("ecanbuy_demo_cart");
+
+    expect(await updateLineAction(LINHA, 2)).toEqual({ ok: false, error: "Item inválido." });
+    expect(await removeLineAction(LINHA)).toEqual({ ok: false, error: "Item inválido." });
+    expect(await updateLineAction("mock:outro-item:1", 2)).toEqual({ ok: false, error: "Item não encontrado no carrinho." });
+  });
+
+  it("aceita só o cupom DEMO10 e exige carrinho com itens", async () => {
+    expect(await applyDiscountAction("DEMO10")).toEqual({ ok: false, error: "Carrinho não encontrado." });
+
+    sessao.getDemoState.mockResolvedValue({ lines: [{ v: TENIS, q: 1 }] });
+    expect(await applyDiscountAction("PROMO10")).toEqual({ ok: false, error: "Cupom inválido ou não aplicável a este carrinho." });
+    expect(await applyDiscountAction("demo10")).toEqual({ ok: true });
+    expect(salvo()).toEqual({ lines: [{ v: TENIS, q: 1 }], c: "DEMO10" });
+    expect(shop.setCartDiscountCodes).not.toHaveBeenCalled();
+  });
+
+  it("concluir o pedido esvazia o carrinho e leva à confirmação", async () => {
+    sessao.getDemoState.mockResolvedValue({ lines: [{ v: TENIS, q: 1 }] });
+    await expect(finishDemoOrderAction()).rejects.toThrow(/^REDIRECT:\/demo\/pedido-confirmado\?pedido=DEMO-\d{6}$/);
+    expect(cookieStore.delete).toHaveBeenCalledWith("ecanbuy_demo_cart");
+  });
+
+  it("concluir sem itens volta ao carrinho", async () => {
+    await expect(finishDemoOrderAction()).rejects.toThrow("REDIRECT:/carrinho");
+    expect(cookieStore.delete).not.toHaveBeenCalled();
+  });
+
+  it("com a Shopify configurada, o checkout de demonstração não conclui nada", async () => {
+    shop.isShopifyConfigured = true;
+    await expect(finishDemoOrderAction()).rejects.toThrow("REDIRECT:/carrinho");
+    expect(sessao.getDemoState).not.toHaveBeenCalled();
   });
 });
 

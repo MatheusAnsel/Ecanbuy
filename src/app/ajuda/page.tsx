@@ -6,7 +6,11 @@ import { getProducts } from "@/lib/shopify";
 import { storeConfig } from "@/lib/store-config";
 import { accountLink } from "@/lib/shop-links";
 
-export const metadata: Metadata = { title: "Ajuda | EcanBuy" };
+export const metadata: Metadata = {
+  title: "Ajuda",
+  description: "Envio, pagamento, trocas, acompanhamento de pedido e acessibilidade na EcanBuy.",
+  alternates: { canonical: "/ajuda" },
+};
 
 export default async function AjudaPage() {
   const products = await getProducts();

@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import ProdutosClient from "@/components/ProdutosClient";
 import CartLink from "@/components/CartLink";
 import { getProducts } from "@/lib/shopify";
+
+export const metadata: Metadata = {
+  title: "Produtos",
+  description: "Todos os produtos da EcanBuy, com filtros por categoria, ofertas e lançamentos.",
+  alternates: { canonical: "/produtos" },
+};
 
 export default async function ProdutosPage({
   searchParams,

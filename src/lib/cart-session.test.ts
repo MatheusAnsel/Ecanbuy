@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const cookieStore = vi.hoisted(() => ({ get: vi.fn() }));
-const shopify = vi.hoisted(() => ({ getCart: vi.fn() }));
+const shopify = vi.hoisted(() => ({ getCart: vi.fn(), isShopifyConfigured: true }));
 
 vi.mock("next/headers", () => ({ cookies: async () => cookieStore }));
 vi.mock("./shopify", () => shopify);

@@ -4,6 +4,24 @@ Todas as mudanças relevantes deste projeto são registradas aqui.
 
 O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e o projeto usa [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.3.0] - 2026-11-18
+
+### Adicionado
+
+- Modo demonstração completo: carrinho em cookie `httpOnly` validado contra o catálogo, cupom de teste `DEMO10`, checkout simulado e confirmação de pedido fictício, com faixa avisando que nenhum pagamento é real
+- Páginas de política: trocas e devoluções, frete e entrega, privacidade (LGPD) e termos de uso, com links no rodapé
+- SEO: título com modelo por página, descrição, Open Graph com a foto do produto, URL canônica, `sitemap.xml` e `robots.txt` (`SITE_URL` configurável)
+- Página 404 própria, tela de erro quando a loja não carrega e aviso quando não há produtos
+- Bloco de identificação do vendedor no rodapé (Decreto 7.962/2013), exibido quando preenchido em `store-config.ts`
+- 33 testes novos (128 no total)
+
+### Corrigido
+
+- Links "Entrar", "Junte-se a nós" e "Acompanhe seu pedido" iam para a página de ajuda mesmo com a Shopify configurada, porque o cabeçalho roda no navegador, onde o domínio da loja não existia
+- Botão "Cadastrar" da home apontava para `#`; agora abre o cadastro de cliente da Shopify
+- Removida a promessa de "10% off" no cadastro, que não correspondia a nenhum desconto configurado
+- Coluna de categorias vazia no rodapé do carrinho
+
 ## [1.2.2] - 2026-11-18
 
 ### Segurança

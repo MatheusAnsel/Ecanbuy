@@ -81,6 +81,7 @@ a { color: inherit; }
 .legal-h { font-size: 22px; line-height: 1; margin: 40px 0 8px; }
 .legal p, .legal li { font-size: 16px; line-height: 1.65; color: var(--m1); margin-top: 10px; max-width: 760px; }
 .legal ul { list-style: disc; padding-left: 22px; }
+.ticker-demo { background: #b42318 !important; }
 .ticker { background: var(--fg); color: var(--bg); text-align: center; padding: 10px 16px; font-size: 12px; font-weight: 600; letter-spacing: 1px; }
 .site-header { position: sticky; top: 0; z-index: 100; background: var(--bg); border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 68px; }
 .logo { font-size: 34px; text-decoration: none; letter-spacing: 0; line-height: 1; }
@@ -157,6 +158,10 @@ a { color: inherit; }
 .check { display: flex; gap: 10px; align-items: center; font-size: 15px; cursor: pointer; }
 .check input { width: 18px; height: 18px; accent-color: var(--fg); }
 .empty { padding: 80px 0; text-align: center; color: var(--m2); }
+.footer-seller { font-style: normal; font-size: 13px; color: var(--m2); margin-top: 32px; }
+.footer-seller a { color: inherit; }
+.notfound { padding-top: 96px; padding-bottom: 96px; }
+.notfound p { color: var(--m1); margin: 16px 0 32px; max-width: 520px; }
 
 /* ---------- produto ---------- */
 .crumbs { display: flex; gap: 8px; font-size: 13px; color: var(--m2); padding-top: 20px; padding-bottom: 20px; flex-wrap: wrap; }
@@ -230,3 +235,4 @@ a { color: inherit; }
   .bag-line > :last-child { grid-column: 2; }
   .summary { position: static; }
 }
+.notfound .row-btns { align-items: center; gap: 24px; }

@@ -63,7 +63,7 @@ sequenceDiagram
     Note over A,N: Erro interno vira uma mensagem genérica para o cliente, e o detalhe vai só para o log
 ```
 
-Sem as variáveis de ambiente da Shopify, o projeto roda em modo demonstração com um catálogo local (com ilustrações em `public/mock`), útil para desenvolver a interface. Ao configurar `SHOPIFY_STORE_DOMAIN` e `SHOPIFY_STOREFRONT_TOKEN`, os produtos, preços, categorias (tipo de produto) e fotos passam a vir da Shopify automaticamente. Produtos da Shopify que ainda não tenham foto recebem uma imagem de exemplo (escolhida pelo nome ou categoria, em `src/lib/fallback-images.ts`), que some assim que a foto real é cadastrada.
+Sem as variáveis de ambiente da Shopify, o projeto roda em modo demonstração: catálogo local (com ilustrações em `public/mock`), carrinho guardado num cookie `httpOnly`, cupom de teste `DEMO10` (10% de desconto) e um checkout simulado que conclui um pedido fictício. Uma faixa no topo avisa que nenhum pagamento é real. Os preços sempre vêm do catálogo no servidor, então editar o cookie não muda valores. Ao configurar `SHOPIFY_STORE_DOMAIN` e `SHOPIFY_STOREFRONT_TOKEN`, os produtos, preços, categorias (tipo de produto) e fotos passam a vir da Shopify automaticamente. Produtos da Shopify que ainda não tenham foto recebem uma imagem de exemplo (escolhida pelo nome ou categoria, em `src/lib/fallback-images.ts`), que some assim que a foto real é cadastrada.
 
 ## Tecnologias
 
@@ -82,7 +82,10 @@ Sem as variáveis de ambiente da Shopify, o projeto roda em modo demonstração 
 - [x] **Carrinho** persistido na Shopify (cookie com o id do carrinho), com alteração de quantidade e remoção
 - [x] **Cupons de desconto** validados pela Shopify
 - [x] **Checkout** hospedado pela Shopify
-- [x] **Modo demonstração** com catálogo local quando a Shopify não está configurada
+- [x] **Modo demonstração** completo quando a Shopify não está configurada: catálogo, carrinho, cupom `DEMO10` e checkout simulado, sem cobrança
+- [x] **Políticas da loja** (`/politicas/...`): trocas e devoluções (CDC), frete e entrega, privacidade (LGPD) e termos de uso
+- [x] **SEO**: título e descrição por página, Open Graph com a foto do produto, URL canônica, `sitemap.xml` e `robots.txt`
+- [x] **Página 404** própria, tela de erro quando a Shopify falha e aviso quando não há produtos
 - [x] **Tema claro** inspirado em lojas esportivas, controlado por variáveis CSS
 - [x] **Barra de utilidades** no topo (acessibilidade, acompanhar pedido, ajuda e conta) e menu com ofertas e lançamentos
 - [x] **Página de ajuda** (`/ajuda`) com envio, pagamento, trocas, acompanhamento de pedido e acessibilidade
@@ -111,14 +114,19 @@ Abra [http://localhost:3000](http://localhost:3000).
 ```
 SHOPIFY_STORE_DOMAIN=minha-loja.myshopify.com
 SHOPIFY_STOREFRONT_TOKEN=seu-token-publico-da-storefront
+SITE_URL=https://seu-dominio.com.br
 ```
+
+`SITE_URL` é usada nos links canônicos, no Open Graph e no sitemap (padrão: `https://ecanbuy.vercel.app`).
+
+Antes de vender de verdade, preencha `seller` em `src/lib/store-config.ts` com nome, CPF ou CNPJ, endereço e e-mail do vendedor. O Decreto 7.962/2013 exige essa identificação em lojas online, e o rodapé só mostra o bloco quando ele está preenchido. Revise também os textos de `src/lib/policies.ts` para refletir o frete, os prazos e o reembolso configurados na Shopify.
 
 A versão da API pode ser trocada com `SHOPIFY_API_VERSION` (padrão em `src/lib/shopify.ts`). Se a variável ficar em branco, como vem no `.env.example`, vale o padrão.
 
 ## Testes e CI
 
 ```bash
-npm test                # 95 testes (Vitest)
+npm test                # 128 testes (Vitest)
 npm run test:coverage   # com cobertura e piso mínimo
 npm run lint
 npm run typecheck
@@ -130,14 +138,15 @@ Os testes cobrem a lógica de negócio sem acessar a Shopify de verdade (a `fetc
 - **Server Actions** (`src/app/actions.ts`): validação do formato dos ids da Shopify, quantidade de 1 a 99, regras do cupom, cupom recusado removido do carrinho, cookie `httpOnly` e `secure` só em produção, carrinho expirado recriado, e erros internos que não vazam para o cliente.
 - **Sessão do carrinho** (`src/lib/cart-session.ts`): leitura do cookie e falha da Shopify sem quebrar a página.
 - **Imagens de exemplo** (`src/lib/fallback-images.ts`): escolha da imagem pelo nome ou categoria do produto, com a primeira regra que combinar vencendo, e escolha estável pelo handle quando não há pista.
-- **Modo demonstração**: sem as variáveis da Shopify, nenhuma requisição é feita.
+- **Modo demonstração** (`src/lib/demo-cart.ts` e as Server Actions): sem as variáveis da Shopify, nenhuma requisição é feita; o cookie é validado contra o catálogo (ids, quantidades de 1 a 99, linhas duplicadas, limite de itens), só o cupom `DEMO10` é aceito, o desconto é calculado no servidor e concluir o pedido esvazia o carrinho.
+- **Políticas, links de conta e SEO** (`src/lib/policies.ts`, `shop-links.ts`, `site.ts`): slugs e conteúdo das políticas, links da conta que funcionam também no navegador, URL do site e resumo da descrição.
 
-| Cobertura (out/2026) | Medido | Mínimo exigido no CI |
+| Cobertura (nov/2026) | Medido | Mínimo exigido no CI |
 | --- | --- | --- |
-| Linhas | 98,5% | 95% |
-| Instruções | 98,7% | 95% |
-| Branches | 98,2% | 90% |
-| Funções | 97,5% | 95% |
+| Linhas | 100% | 95% |
+| Instruções | 100% | 95% |
+| Branches | 99,5% | 90% |
+| Funções | 100% | 95% |
 
 A métrica considera `src/lib` e `src/app/actions.ts`, onde está a lógica. As páginas e os componentes são apresentação sobre essa lógica e ficam de fora, assim como `types.ts` e `store-config.ts` (só interfaces e textos). Se a cobertura cair abaixo do mínimo, o CI falha.
 
@@ -153,7 +162,11 @@ src/
  │    ├── produto/[handle]/     # Detalhe do produto
  │    ├── carrinho/             # Carrinho
  │    ├── ajuda/                # Envio, pagamento, trocas, pedido e acessibilidade
- │    └── actions.ts            # Server Actions do carrinho
+ │    ├── politicas/[slug]/     # Trocas, frete, privacidade e termos
+ │    ├── demo/                 # Checkout e confirmação do modo demonstração
+ │    ├── sitemap.ts, robots.ts # SEO
+ │    ├── not-found.tsx, error.tsx
+ │    └── actions.ts            # Server Actions do carrinho (Shopify ou demonstração)
  ├── components/                # Componentes de interface
  └── lib/
       ├── shopify.ts            # Cliente da Storefront API (com testes)
@@ -161,6 +174,9 @@ src/
       ├── fallback-images.ts    # Imagem de exemplo para produto sem foto (com testes)
       ├── shop-links.ts         # Links da conta do cliente hospedada na Shopify
       ├── mock-products.ts      # Catálogo do modo demonstração
+      ├── demo-cart.ts          # Carrinho, cupom e pedido do modo demonstração (com testes)
+      ├── policies.ts           # Textos das políticas da loja (com testes)
+      ├── site.ts               # URL pública e resumo para SEO (com testes)
       └── store-config.ts       # Textos de política da loja
 ```
 

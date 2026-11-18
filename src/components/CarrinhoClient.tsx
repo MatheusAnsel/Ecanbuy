@@ -5,6 +5,7 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { useState } from "react";
 import type { Cart } from "@/lib/types";
+import { DEMO_COUPON } from "@/lib/demo-config";
 import { applyDiscountAction, removeLineAction, updateLineAction } from "@/app/actions";
 
 interface CarrinhoClientProps {
@@ -54,8 +55,9 @@ export default function CarrinhoClient({ cart, configured }: CarrinhoClientProps
             </h1>
 
             {!configured && (
-              <p className="err" style={{ marginTop: "12px" }}>
-                Modo demonstração: a loja ainda não está conectada à Shopify.
+              <p className="note" style={{ marginTop: "12px" }}>
+                Modo demonstração: carrinho e checkout simulados, sem pagamento real. Use o cupom {DEMO_COUPON} para
+                testar o desconto.
               </p>
             )}
 
@@ -122,7 +124,9 @@ export default function CarrinhoClient({ cart, configured }: CarrinhoClientProps
               <a href={cart?.checkoutUrl || "#"} aria-disabled={!cart?.checkoutUrl} className="btn-pill">
                 Finalizar compra
               </a>
-              <p className="note" style={{ textAlign: "center" }}>Pagamento no checkout seguro da Shopify</p>
+              <p className="note" style={{ textAlign: "center" }}>
+                {configured ? "Pagamento no checkout seguro da Shopify" : "Checkout simulado: nenhum valor é cobrado"}
+              </p>
             </aside>
           )}
         </div>

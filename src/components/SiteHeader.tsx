@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { storeConfig } from "@/lib/store-config";
-import { accountLink } from "@/lib/shop-links";
+import { accountLink, isDemoStore } from "@/lib/shop-links";
+import { DEMO_COUPON } from "@/lib/demo-config";
 
 interface SiteHeaderProps {
   cartSlot: React.ReactNode;
@@ -11,7 +12,13 @@ export default function SiteHeader({ cartSlot, categories = [] }: SiteHeaderProp
   return (
     <>
       <a href="#conteudo" className="skip">Pular para o conteúdo</a>
-      <div className="ticker">{storeConfig.ticker.join("  ·  ")}</div>
+      {isDemoStore() ? (
+        <div className="ticker ticker-demo" role="note">
+          LOJA DE DEMONSTRAÇÃO · PRODUTOS DE EXEMPLO · NENHUM PAGAMENTO É REAL · CUPOM DE TESTE: {DEMO_COUPON}
+        </div>
+      ) : (
+        <div className="ticker">{storeConfig.ticker.join("  ·  ")}</div>
+      )}
 
       <div className="utility pad">
         <Link href="/ajuda#acessibilidade">Acessibilidade</Link>

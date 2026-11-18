@@ -4,6 +4,7 @@ import type { Product } from "@/lib/types";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import ProductCard from "@/components/ProductCard";
+import { accountLink } from "@/lib/shop-links";
 
 interface HomeClientProps {
   products: Product[];
@@ -50,66 +51,75 @@ export default function HomeClient({ products, categories, allCategories, cartSl
         </div>
       </section>
 
-      {/* Carrossel de novidades */}
-      <section className="section pad">
-        <div className="section-head">
-          <h2 className="display section-title">{news.length >= 3 ? "Novidades" : "Em destaque"}</h2>
-          <Link href={news.length >= 3 ? "/produtos?filtro=novidades" : "/produtos"} className="link-under">Ver tudo</Link>
-        </div>
-        <div className="rail">
-          {rail.map((p) => (
-            <ProductCard key={p.id} product={p} sizes="(max-width: 900px) 78vw, 380px" />
-          ))}
-        </div>
-      </section>
-
-      {/* Categorias */}
-      {categories.length > 0 && (
-        <section id="categorias" className="section pad">
+      {products.length === 0 ? (
+        <section className="section pad">
+          <p className="empty">Nenhum produto disponível no momento. Volte em breve.</p>
+        </section>
+      ) : (
+        <>
+        {/* Carrossel de novidades */}
+        <section className="section pad">
           <div className="section-head">
-            <h2 className="display section-title">Compre por categoria</h2>
+            <h2 className="display section-title">{news.length >= 3 ? "Novidades" : "Em destaque"}</h2>
+            <Link href={news.length >= 3 ? "/produtos?filtro=novidades" : "/produtos"} className="link-under">Ver tudo</Link>
           </div>
-          <div className="tiles">
-            {categories.map((cat) => (
-              <Link key={cat.name} href={`/produtos?categoria=${encodeURIComponent(cat.name)}`} className="tile">
-                {cat.image && (
-                  <Image src={cat.image} alt={cat.name} fill sizes="(max-width: 900px) 50vw, 25vw" style={{ objectFit: "cover" }} />
-                )}
-                <span className="tile-label display">{cat.name} <span aria-hidden>→</span></span>
-              </Link>
+          <div className="rail">
+            {rail.map((p) => (
+              <ProductCard key={p.id} product={p} sizes="(max-width: 900px) 78vw, 380px" />
             ))}
           </div>
         </section>
-      )}
 
-      {/* Banners de campanha */}
-      <section className="section pad">
-        <div className="promos">
-          <Link href="/produtos?filtro=ofertas" className="promo promo-dark">
-            {offerImage && <Image src={offerImage} alt="" fill sizes="(max-width: 900px) 100vw, 50vw" style={{ objectFit: "cover" }} />}
-            <div className="promo-shade" />
-            <div className="promo-body">
-              <h2 className="display promo-title">Ofertas<br />da estação</h2>
-              <span className="btn btn-light">Comprar <span aria-hidden>→</span></span>
+        {/* Categorias */}
+        {categories.length > 0 && (
+          <section id="categorias" className="section pad">
+            <div className="section-head">
+              <h2 className="display section-title">Compre por categoria</h2>
             </div>
-          </Link>
-          <Link href="/produtos?filtro=novidades" className="promo promo-dark">
-            {newImage && <Image src={newImage} alt="" fill sizes="(max-width: 900px) 100vw, 50vw" style={{ objectFit: "cover" }} />}
-            <div className="promo-shade" />
-            <div className="promo-body">
-              <h2 className="display promo-title">Acabou<br />de chegar</h2>
-              <span className="btn btn-light">Comprar <span aria-hidden>→</span></span>
+            <div className="tiles">
+              {categories.map((cat) => (
+                <Link key={cat.name} href={`/produtos?categoria=${encodeURIComponent(cat.name)}`} className="tile">
+                  {cat.image && (
+                    <Image src={cat.image} alt={cat.name} fill sizes="(max-width: 900px) 50vw, 25vw" style={{ objectFit: "cover" }} />
+                  )}
+                  <span className="tile-label display">{cat.name} <span aria-hidden>→</span></span>
+                </Link>
+              ))}
             </div>
-          </Link>
-        </div>
-      </section>
+          </section>
+        )}
+
+        {/* Banners de campanha */}
+        <section className="section pad">
+          <div className="promos">
+            <Link href="/produtos?filtro=ofertas" className="promo promo-dark">
+              {offerImage && <Image src={offerImage} alt="" fill sizes="(max-width: 900px) 100vw, 50vw" style={{ objectFit: "cover" }} />}
+              <div className="promo-shade" />
+              <div className="promo-body">
+                <h2 className="display promo-title">Ofertas<br />da estação</h2>
+                <span className="btn btn-light">Comprar <span aria-hidden>→</span></span>
+              </div>
+            </Link>
+            <Link href="/produtos?filtro=novidades" className="promo promo-dark">
+              {newImage && <Image src={newImage} alt="" fill sizes="(max-width: 900px) 100vw, 50vw" style={{ objectFit: "cover" }} />}
+              <div className="promo-shade" />
+              <div className="promo-body">
+                <h2 className="display promo-title">Acabou<br />de chegar</h2>
+                <span className="btn btn-light">Comprar <span aria-hidden>→</span></span>
+              </div>
+            </Link>
+          </div>
+        </section>
+
+        </>
+      )}
 
       {/* Chamada */}
       <section className="band pad">
         <h2 className="display" style={{ fontSize: "clamp(36px, 5vw, 72px)", lineHeight: 0.95 }}>
-          Crie sua conta.<br />Ganhe 10% off.
+          Crie sua conta.<br />Acompanhe seus pedidos.
         </h2>
-        <Link href="#" className="btn">Cadastrar <span aria-hidden>→</span></Link>
+        <a href={accountLink("/register")} className="btn">Cadastrar <span aria-hidden>→</span></a>
       </section>
 
       </main>

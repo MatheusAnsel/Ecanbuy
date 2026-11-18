@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Barlow_Condensed, Inter } from "next/font/google";
 import "./globals.css";
+import { siteUrl } from "@/lib/site";
 
 const display = Barlow_Condensed({
   variable: "--font-display",
@@ -14,8 +15,11 @@ const body = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "EcanBuy",
-  description: "Loja online EcanBuy",
+  metadataBase: new URL(siteUrl()),
+  title: { default: "EcanBuy | Produtos importados", template: "%s | EcanBuy" },
+  description: "Loja online EcanBuy: produtos importados, frete e prazo calculados no checkout e pagamento seguro pela Shopify.",
+  openGraph: { type: "website", siteName: "EcanBuy", locale: "pt_BR" },
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport: Viewport = {

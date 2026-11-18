@@ -10,6 +10,9 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  // O domínio da loja não é segredo (aparece em todo link de checkout). Ele é copiado para
+  // uma variável embutida no bundle para que os links de conta funcionem em componentes client.
+  env: { SHOPIFY_ACCOUNT_DOMAIN: process.env.SHOPIFY_STORE_DOMAIN?.trim() ?? "" },
   poweredByHeader: false,
   images: {
     remotePatterns: [{ protocol: "https", hostname: "cdn.shopify.com", pathname: "/s/files/**" }],
