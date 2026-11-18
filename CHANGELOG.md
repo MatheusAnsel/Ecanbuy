@@ -4,6 +4,18 @@ Todas as mudanças relevantes deste projeto são registradas aqui.
 
 O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e o projeto usa [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.2.2] - 2026-11-18
+
+### Segurança
+
+- Next.js atualizado para 16.4.6, corrigindo vulnerabilidade crítica de execução remota de código (GHSA-2464-fhr4-w9xw, GHSA-673q-mjm6-r5xr) e outras do 16.3.x
+- Dependências de desenvolvimento atualizadas (zod, minimatch); `npm audit` sem vulnerabilidades
+
+### Corrigido
+
+- CI: o passo de testes agora falha de verdade quando um teste ou o piso de cobertura falha (antes o `tee` mascarava o código de saída)
+- CI: o resumo de cobertura não gera erro extra quando um passo anterior já falhou
+
 ## [1.2.1] - 2026-10-21
 
 ### Documentação

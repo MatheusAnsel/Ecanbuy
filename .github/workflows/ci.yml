@@ -34,12 +34,19 @@ jobs:
       - name: Tipos
         run: npm run typecheck
 
+      # shell: bash ativa pipefail; sem ele o código de saída seria o do tee
+      # e uma falha nos testes ou no piso de cobertura não derrubaria o CI.
       - name: Testes com cobertura (falha abaixo do piso configurado)
+        shell: bash
         run: npm run test:coverage | tee coverage.txt
 
       - name: Resumo de cobertura no painel da execução
         if: always()
         run: |
+          if [ ! -f coverage.txt ]; then
+            echo "Testes não rodaram (um passo anterior falhou); sem resumo de cobertura."
+            exit 0
+          fi
           {
             echo "### Cobertura"
             echo '```'
